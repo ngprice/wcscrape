@@ -117,6 +117,11 @@ namespace WebcomicScraper
             txtTitle.Text = series.Title;
             txtAuthor.Text = series.Author;
             txtArtist.Text = series.Artist;
+            txtSummary.Text = series.Summary;
+
+            previewPictureBox.WaitOnLoad = false;
+            previewPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            previewPictureBox.LoadAsync(series.CoverImageURL);
         }
 
         private void Status(string msg)

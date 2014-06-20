@@ -6,67 +6,87 @@ using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using HtmlAgilityPack;
+using System.Threading;
 
 namespace WebcomicScraper.Comic
 {
-    class Index
+    public class Index
     {
-        private WebBrowser browser;
-        private Series series;
+        private Series ParentSeries;
+        private bool AnalysisSuccess = false;
 
-        public string indexURL { get; set; }
-        //private string indexHTML { get; set; }
+        public HtmlAgilityPack.HtmlDocument indexHtmlDocument { get; set; }
 
-        public Index(string sourceURL)
+        public Index(Series parent, System.Windows.Forms.HtmlDocument doc)
         {
-            this.indexURL = sourceURL;
+            this.ParentSeries = parent;
+            indexHtmlDocument = new HtmlAgilityPack.HtmlDocument();
+            indexHtmlDocument.LoadHtml(doc.Body.InnerHtml);
         }
 
-        public bool Analyze()
+        public void Analyze()
+        {
+            AnalysisSuccess = ParseSeries(indexHtmlDocument);
+        }
+
+        private bool ParseSeries(HtmlAgilityPack.HtmlDocument doc)
         {
             bool result = false;
 
-            //indexHTML = GetHTML(indexURL);
-            browser = new WebBrowser();
-            browser.Navigate(indexURL);
+            ParentSeries.Title = Find(FindTitle, doc);
+            ParentSeries.Description = Find(FindDescription, doc);
+            ParentSeries.Author = Find(FindAuthor, doc);
+            ParentSeries.Artist = Find(FindArtist, doc);
 
-            series = ParseSeries(browser.Document);
-
+            result = true;
             return result;
         }
 
-        private Series ParseSeries(HtmlDocument doc)
-        {
-            var result = new Series();
-            result.Title = Find(FindTitle, doc);
-            result.Description = Find(FindDescription, doc);
+        private delegate string FindOperation(HtmlAgilityPack.HtmlDocument doc);
 
-            return result;
-        }
-
-        private delegate string FindOperation(HtmlDocument doc);
-
-        private string Find(FindOperation op, HtmlDocument doc)
+        private string Find(FindOperation op, HtmlAgilityPack.HtmlDocument doc)
         {
             return op(doc);
         }
 
-        private string FindTitle(HtmlDocument doc)
+        private string FindTitle(HtmlAgilityPack.HtmlDocument doc)
         {
             var result = String.Empty;
 
-            IQueryable<HtmlElement> h1HEC = doc.GetElementsByTagName("h1").AsQueryable().Cast<HtmlElement>();
-            var titleElement = h1HEC.First(e => e.GetAttribute("class") == "title");
+            var titleElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article/div[1]/div/h1[@class='title']");
+            if (titleElement != null)
+                result = titleElement.InnerText;
 
             return result;
         }
 
-        private string FindDescription(HtmlDocument doc)
+        private string FindDescription(HtmlAgilityPack.HtmlDocument doc)
         {
             var result = String.Empty;
 
-            IQueryable<HtmlElement> h1HEC = doc.GetElementsByTagName("h1").AsQueryable().Cast<HtmlElement>();
-            var titleElement = h1HEC.First(e => e.GetAttribute("class") == "title");
+            var descriptionElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article/div[1]/div[@class='manga_detail']/div[1]/ul//p[@id='show']");
+            result = descriptionElement.InnerText;
+
+            return result;
+        }
+
+        private string FindAuthor(HtmlAgilityPack.HtmlDocument doc)
+        {
+            var result = String.Empty;
+
+            var authorElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article/div[1]/div[@class='manga_detail']/div[1]/ul//label[text()='Author(s):']/../a[1]");
+            result = authorElement.InnerText;
+
+            return result;
+        }
+
+        private string FindArtist(HtmlAgilityPack.HtmlDocument doc)
+        {
+            var result = String.Empty;
+
+            var authorElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article/div[1]/div[@class='manga_detail']/div[1]/ul//label[text()='Artist(s):']/../a[1]");
+            result = authorElement.InnerText;
 
             return result;
         }

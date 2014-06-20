@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mangadownloader", "luelinksDL\mangadownloader.csproj", "{7B73A4CE-00CB-4328-AF09-E195BDAA8BF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mangadownloader", "mangadownloader\mangadownloader.csproj", "{7B73A4CE-00CB-4328-AF09-E195BDAA8BF4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebcomicScraper", "WebcomicScraper\WebcomicScraper.csproj", "{3CD26914-C2CE-4DCE-A7FD-5439809F7F11}"
 EndProject

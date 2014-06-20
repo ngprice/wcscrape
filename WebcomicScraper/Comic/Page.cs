@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WebcomicScraper.Comic
 {
-    class Page
+    public class Page
     {
     }
 }

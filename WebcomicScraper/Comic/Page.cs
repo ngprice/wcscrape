@@ -7,12 +7,18 @@ namespace WebcomicScraper.Comic
 {
     public class Page
     {
-        public string Title { get; set; }
+        public int PageNum { get; set; }
         public bool Downloaded { get; set; }
+        public string ImageURL { get; set; }
+
+        public Page()
+        {
+            Downloaded = false;
+        }
 
         public override string ToString()
         {
-            return (String.Format("Page: {0}", Title));
+            return (String.Format("Page {0}", PageNum));
         }
     }
 }

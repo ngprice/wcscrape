@@ -34,7 +34,7 @@ namespace WebcomicScraper
          * --Resource list for saving URLs
          * */
 
-        private void btnAnalyze_Click(object sender, EventArgs e)
+        private void btnScrape_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(txtIndex.Text))
             {
@@ -116,6 +116,19 @@ namespace WebcomicScraper
             source.DataSource = series.Index.Chapters;
             dgvIndex.DataSource = source;
             dgvIndex.Refresh();
+        }
+
+        private void btnDownload_Click(object sender, EventArgs e)
+        {
+            var rows = dgvIndex.SelectedRows;
+            if (rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in rows)
+                {
+                    Scraper.DownloadChapter(row.DataBoundItem as Chapter);
+                }
+            }
+            else Status("Must select at least 1 row");
         }
 
         private void Status(string msg)

@@ -30,7 +30,7 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.txtIndex = new System.Windows.Forms.TextBox();
-            this.btnAnalyze = new System.Windows.Forms.Button();
+            this.btnScrape = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtSummary = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -46,6 +46,8 @@
             this.analysisBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dgvIndex = new System.Windows.Forms.DataGridView();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnDownload = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -66,19 +68,19 @@
             // 
             this.txtIndex.Location = new System.Drawing.Point(82, 10);
             this.txtIndex.Name = "txtIndex";
-            this.txtIndex.Size = new System.Drawing.Size(261, 20);
+            this.txtIndex.Size = new System.Drawing.Size(342, 20);
             this.txtIndex.TabIndex = 1;
             this.txtIndex.Text = "http://www.mangahere.co/manga/onepunch_man/";
             // 
-            // btnAnalyze
+            // btnScrape
             // 
-            this.btnAnalyze.Location = new System.Drawing.Point(349, 8);
-            this.btnAnalyze.Name = "btnAnalyze";
-            this.btnAnalyze.Size = new System.Drawing.Size(75, 23);
-            this.btnAnalyze.TabIndex = 2;
-            this.btnAnalyze.Text = "Analyze";
-            this.btnAnalyze.UseVisualStyleBackColor = true;
-            this.btnAnalyze.Click += new System.EventHandler(this.btnAnalyze_Click);
+            this.btnScrape.Location = new System.Drawing.Point(433, 8);
+            this.btnScrape.Name = "btnScrape";
+            this.btnScrape.Size = new System.Drawing.Size(75, 23);
+            this.btnScrape.TabIndex = 2;
+            this.btnScrape.Text = "Analyze";
+            this.btnScrape.UseVisualStyleBackColor = true;
+            this.btnScrape.Click += new System.EventHandler(this.btnScrape_Click);
             // 
             // groupBox1
             // 
@@ -180,9 +182,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 580);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 497);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(436, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(744, 22);
             this.statusStrip1.TabIndex = 4;
             // 
             // ToolStripStatusLabel1
@@ -193,9 +195,9 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.dgvIndex);
-            this.groupBox2.Location = new System.Drawing.Point(11, 348);
+            this.groupBox2.Location = new System.Drawing.Point(430, 42);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(413, 229);
+            this.groupBox2.Size = new System.Drawing.Size(307, 258);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Index";
@@ -210,19 +212,39 @@
             this.dgvIndex.Location = new System.Drawing.Point(3, 16);
             this.dgvIndex.Name = "dgvIndex";
             this.dgvIndex.ReadOnly = true;
-            this.dgvIndex.RowHeadersVisible = false;
-            this.dgvIndex.Size = new System.Drawing.Size(407, 210);
+            this.dgvIndex.Size = new System.Drawing.Size(301, 239);
             this.dgvIndex.TabIndex = 0;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Location = new System.Drawing.Point(11, 347);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(726, 145);
+            this.groupBox3.TabIndex = 6;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Output";
+            // 
+            // btnDownload
+            // 
+            this.btnDownload.Location = new System.Drawing.Point(433, 312);
+            this.btnDownload.Name = "btnDownload";
+            this.btnDownload.Size = new System.Drawing.Size(75, 23);
+            this.btnDownload.TabIndex = 7;
+            this.btnDownload.Text = "Download";
+            this.btnDownload.UseVisualStyleBackColor = true;
+            this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
             // 
             // WebcomicScraperForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(436, 602);
+            this.ClientSize = new System.Drawing.Size(744, 519);
+            this.Controls.Add(this.btnDownload);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.btnAnalyze);
+            this.Controls.Add(this.btnScrape);
             this.Controls.Add(this.txtIndex);
             this.Controls.Add(this.label1);
             this.Name = "WebcomicScraperForm";
@@ -243,7 +265,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtIndex;
-        private System.Windows.Forms.Button btnAnalyze;
+        private System.Windows.Forms.Button btnScrape;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel ToolStripStatusLabel1;
@@ -259,6 +281,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dgvIndex;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button btnDownload;
     }
 }
 

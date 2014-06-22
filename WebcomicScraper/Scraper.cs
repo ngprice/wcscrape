@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Net;
 using WebcomicScraper.Comic;
 using HtmlAgilityPack;
+
 
 namespace WebcomicScraper
 {
@@ -34,10 +37,8 @@ namespace WebcomicScraper
 
         private static bool ParseIndex(Series series)
         {
-            var index = new Index(series);
-            index.Chapters = FindChapters(series.Document);
-
-            return index.Chapters.Count() > 0; //return false if we didn't find any chapters
+            series.Index.Chapters = FindChapters(series.Document);
+            return series.Index.Chapters.Count() > 0; //return false if we didn't find any chapters
         }
 
         private delegate object FindOperation(HtmlDocument doc);
@@ -137,30 +138,156 @@ namespace WebcomicScraper
             return result;
         }
 
-        ////uhh is this thread safe?
-        //private string GetHTML(string fromURL)
-        //{
-        //    string data = String.Empty;
-        //    var request = (HttpWebRequest)WebRequest.Create(fromURL);
-        //    var response = (HttpWebResponse)request.GetResponse();
+        public static bool DownloadChapter(Chapter chapter)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(GetHTML(chapter.SourceURL));
 
-        //    if (response.StatusCode == HttpStatusCode.OK)
-        //    {
-        //        Stream receiveStream = response.GetResponseStream();
-        //        StreamReader readStream = null;
+            //table of contents
+            var contentsNodes = doc.DocumentNode.SelectNodes("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/select[1]/option");
 
-        //        if (response.CharacterSet == null || response.CharacterSet == "utf8")
-        //            readStream = new StreamReader(receiveStream);
-        //        else
-        //            readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+            //there's a pattern to these image names. in each thread try to guess the image name, then use xpath if that fails
+            //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_001.jpg?v=11350898681
+            //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_002.jpg?v=11350898681
+            //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_003-004.jpg?v=11350898681 //combined pages
+            //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_019-020.jpg?v=11350898681 //page 17 is actually "numbered" 19-20. annoying.
 
-        //        data = readStream.ReadToEnd();
-        //        response.Close();
-        //        readStream.Close();
-        //    }
-        //    else throw new ApplicationException(String.Format("Bad response from index: {0}, {1}", System.Enum.GetName(typeof(HttpStatusCode), response.StatusCode), response.StatusDescription));
+            //start with two pages, compare the image names. 
+            var imageElement = doc.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
+            if (imageElement != null)
+            {
+                Page firstPage = new Page();
+                firstPage.ImageURL = imageElement.GetAttributeValue("src", "");
 
-        //    return data;
-        //}
+                var secondPageLink = doc.DocumentNode.SelectSingleNode("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/a[@class='next_page']");
+                if (secondPageLink != null && !String.IsNullOrEmpty(secondPageLink.GetAttributeValue("href","")))
+                {
+                    var doc2 = new HtmlDocument();
+                    doc2.LoadHtml(GetHTML(secondPageLink.GetAttributeValue("href","")));
+
+                    Page secondPage = new Page();
+                    var imageElement2 = doc2.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
+                    if (imageElement2 != null)
+                    {
+                        secondPage.ImageURL = imageElement2.GetAttributeValue("src", "");
+
+                        //try to guess the pattern & read images directly without having to fetch whole html document for every page
+                        List<Page> predictedPages = Scraper.PredictPages(contentsNodes.Count(), firstPage.ImageURL, secondPage.ImageURL);
+
+                        if (predictedPages.Count > 0)
+                        {
+                            return DownloadPages(predictedPages);
+                        }
+                    }
+                }
+            }
+
+
+            //contentsNodes.AsParallel().AsQueryable().
+
+            return true;
+        }
+
+        //uhh is this thread safe?
+        private static string GetHTML(string fromURL)
+        {
+            string data = String.Empty;
+            var request = (HttpWebRequest)WebRequest.Create(fromURL);
+            var response = (HttpWebResponse)request.GetResponse();
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+
+                if (response.CharacterSet == null || response.CharacterSet == "utf8")
+                    readStream = new StreamReader(receiveStream);
+                else
+                    readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+
+                data = readStream.ReadToEnd();
+                response.Close();
+                readStream.Close();
+            }
+            else throw new ApplicationException(String.Format("Bad response from index: {0}, {1}", System.Enum.GetName(typeof(HttpStatusCode), response.StatusCode), response.StatusDescription));
+
+            return data;
+        }
+
+        private static List<Page> PredictPages(int iterations, params string[] urls)
+        {
+            var result = new List<Page>();
+
+            for (int i = 0; i < urls.Length; i++)
+            {
+                var first = urls[i++];
+                var second = urls[i--];
+                var diff = DiffIndex(first, second);
+
+                if (diff > 0) //potential match
+                {
+                    var firstChar = first[diff];
+                    var secondChar = second[diff];
+                    int firstNum, secondNum;
+
+                    if (int.TryParse(firstChar.ToString(), out firstNum) && int.TryParse(secondChar.ToString(), out secondNum))
+                    {
+                        if (secondNum - firstNum == 1) //iterating by 1
+                        {
+                            for (int j = 1; j <= urls.Count(); j++) //create pages for the URLs we were given
+                            {
+                                var page = new Page();
+                                page.PageNum = j;
+                                page.ImageURL = urls[j - 1];
+
+                                result.Add(page);
+                            }
+
+                            int pageNumLength = 1;
+                            for (int k = diff - 1; k >= 0; k--) //work backwards through the string
+                            {
+                                int output;
+                                if (int.TryParse(first[k].ToString(), out output))
+                                    pageNumLength++;
+                                else break;
+                            }
+
+                            var formatString = new String('0', pageNumLength);
+                            var predictionTemplate = first.Substring(0, diff - pageNumLength + 1) + "{0}" + first.Substring(diff + 1, first.Length - diff - 1);
+
+                            for (int l = result.Count + 1; l <= iterations; l++) //prediction loop
+                            {
+                                var predictedPage = new Page();
+                                predictedPage.PageNum = l;
+                                predictedPage.ImageURL = String.Format(predictionTemplate, l.ToString(formatString));
+
+                                result.Add(predictedPage);
+                            }
+
+                            return result;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static int DiffIndex(string first, string second)
+        {
+            if (first == second)
+                return -1;
+
+            for (int i = 0; i < first.Length; i++)
+                if (first[i] != second[i])
+                    return i;
+
+            return 0;
+        }
+
+        private static bool DownloadPages(List<Page> pages)
+        {
+            return true;
+        }
     }
 }

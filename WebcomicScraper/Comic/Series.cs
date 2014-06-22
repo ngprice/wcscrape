@@ -21,7 +21,7 @@ namespace WebcomicScraper.Comic
         public Series(HtmlDocument doc)
         {
             Document = doc;
-            Index = new Index(this);
+            Index = new Index();
         }
 
         public override string ToString()

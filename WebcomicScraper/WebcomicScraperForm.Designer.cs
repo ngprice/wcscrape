@@ -32,10 +32,6 @@
             this.txtIndex = new System.Windows.Forms.TextBox();
             this.btnAnalyze = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.previewPictureBox = new System.Windows.Forms.PictureBox();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.ToolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.analysisBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.txtSummary = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtArtist = new System.Windows.Forms.TextBox();
@@ -44,31 +40,39 @@
             this.txtTitle = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.previewPictureBox = new System.Windows.Forms.PictureBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.ToolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.analysisBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.dgvIndex = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIndex)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Location = new System.Drawing.Point(12, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(93, 13);
+            this.label1.Size = new System.Drawing.Size(64, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Series Index URL:";
+            this.label1.Text = "Series URL:";
             // 
             // txtIndex
             // 
-            this.txtIndex.Location = new System.Drawing.Point(112, 10);
+            this.txtIndex.Location = new System.Drawing.Point(82, 10);
             this.txtIndex.Name = "txtIndex";
-            this.txtIndex.Size = new System.Drawing.Size(236, 20);
+            this.txtIndex.Size = new System.Drawing.Size(261, 20);
             this.txtIndex.TabIndex = 1;
             this.txtIndex.Text = "http://www.mangahere.co/manga/onepunch_man/";
             // 
             // btnAnalyze
             // 
-            this.btnAnalyze.Location = new System.Drawing.Point(354, 8);
+            this.btnAnalyze.Location = new System.Drawing.Point(349, 8);
             this.btnAnalyze.Name = "btnAnalyze";
             this.btnAnalyze.Size = new System.Drawing.Size(75, 23);
             this.btnAnalyze.TabIndex = 2;
@@ -87,34 +91,12 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.previewPictureBox);
-            this.groupBox1.Location = new System.Drawing.Point(16, 42);
+            this.groupBox1.Location = new System.Drawing.Point(11, 42);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(413, 299);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Series Info";
-            // 
-            // previewPictureBox
-            // 
-            this.previewPictureBox.Location = new System.Drawing.Point(238, 16);
-            this.previewPictureBox.Name = "previewPictureBox";
-            this.previewPictureBox.Size = new System.Drawing.Size(169, 277);
-            this.previewPictureBox.TabIndex = 6;
-            this.previewPictureBox.TabStop = false;
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 417);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(438, 22);
-            this.statusStrip1.TabIndex = 4;
-            // 
-            // ToolStripStatusLabel1
-            // 
-            this.ToolStripStatusLabel1.Name = "ToolStripStatusLabel1";
-            this.ToolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
             // txtSummary
             // 
@@ -122,6 +104,7 @@
             this.txtSummary.Multiline = true;
             this.txtSummary.Name = "txtSummary";
             this.txtSummary.ReadOnly = true;
+            this.txtSummary.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSummary.Size = new System.Drawing.Size(169, 199);
             this.txtSummary.TabIndex = 16;
             // 
@@ -185,11 +168,58 @@
             this.label2.TabIndex = 9;
             this.label2.Text = "Title:";
             // 
+            // previewPictureBox
+            // 
+            this.previewPictureBox.Location = new System.Drawing.Point(238, 16);
+            this.previewPictureBox.Name = "previewPictureBox";
+            this.previewPictureBox.Size = new System.Drawing.Size(169, 277);
+            this.previewPictureBox.TabIndex = 6;
+            this.previewPictureBox.TabStop = false;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripStatusLabel1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 580);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(436, 22);
+            this.statusStrip1.TabIndex = 4;
+            // 
+            // ToolStripStatusLabel1
+            // 
+            this.ToolStripStatusLabel1.Name = "ToolStripStatusLabel1";
+            this.ToolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.dgvIndex);
+            this.groupBox2.Location = new System.Drawing.Point(11, 348);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(413, 229);
+            this.groupBox2.TabIndex = 5;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Index";
+            // 
+            // dgvIndex
+            // 
+            this.dgvIndex.AllowUserToAddRows = false;
+            this.dgvIndex.AllowUserToDeleteRows = false;
+            this.dgvIndex.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvIndex.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvIndex.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dgvIndex.Location = new System.Drawing.Point(3, 16);
+            this.dgvIndex.Name = "dgvIndex";
+            this.dgvIndex.ReadOnly = true;
+            this.dgvIndex.RowHeadersVisible = false;
+            this.dgvIndex.Size = new System.Drawing.Size(407, 210);
+            this.dgvIndex.TabIndex = 0;
+            // 
             // WebcomicScraperForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(438, 439);
+            this.ClientSize = new System.Drawing.Size(436, 602);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnAnalyze);
@@ -202,6 +232,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIndex)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -225,6 +257,8 @@
         private System.Windows.Forms.TextBox txtTitle;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.DataGridView dgvIndex;
     }
 }
 

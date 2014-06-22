@@ -51,17 +51,6 @@ namespace WebcomicScraper
                 browser.Navigate(txtIndex.Text);
 
                 browser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(DocumentLoaded);
-
-                //var series = new Series(txtIndex.Text);
-                
-                //threading here for asynch update status bar
-                //series.Analyze();
-
-                //DisplaySeries(series);
-
-                //if (!String.IsNullOrEmpty(series.Title))
-                //    Status("Analysis successful!");
-                //else Status("Analysis failed!");
             }
             catch (Exception ex)
             {
@@ -80,13 +69,15 @@ namespace WebcomicScraper
 
         private void analysis_DoWork(object sender, DoWorkEventArgs e)
         {
-            LoadedSeries = new Series((HtmlDocument)e.Argument);
-            e.Result = LoadedSeries.Analyze();
+            LoadedSeries = Scraper.LoadSeries((HtmlDocument)e.Argument);
+            e.Result = Scraper.AnalyzeSeries(LoadedSeries);
         }
 
         private void analysis_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
             Cursor.Current = Cursors.Default;
+
+            MessageBox.Show(browser.StatusText);
 
             if (e.Error != null)
             {

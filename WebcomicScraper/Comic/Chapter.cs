@@ -17,11 +17,16 @@ namespace WebcomicScraper.Comic
 
         public List<Page> Pages { get; private set; }
 
+        public Chapter()
+        {
+            Pages = new List<Page>();
+        }
+
         public bool Downloaded
         {
             get
             {
-                return !Pages.Any(p => p.Downloaded == false);
+                return Pages.Count > 0 && !Pages.Any(p => p.Downloaded == false);
             }
         }
 

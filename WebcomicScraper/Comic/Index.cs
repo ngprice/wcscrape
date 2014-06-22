@@ -12,12 +12,11 @@ namespace WebcomicScraper.Comic
 {
     public class Index
     {
-        private Series _ParentSeries;
         public List<Chapter> Chapters { get; set; }
 
         public Index(Series parent)
         {
-            this._ParentSeries = parent;
+            parent.Index = this;
         }
     }
 }

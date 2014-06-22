@@ -76,9 +76,7 @@ namespace WebcomicScraper
         private void analysis_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
             Cursor.Current = Cursors.Default;
-
-            MessageBox.Show(browser.StatusText);
-
+            
             if (e.Error != null)
             {
                 MessageBox.Show(String.Format("Error in background thread: {0}", e.Error.Message));
@@ -113,6 +111,11 @@ namespace WebcomicScraper
             previewPictureBox.WaitOnLoad = false;
             previewPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             previewPictureBox.LoadAsync(series.CoverImageURL);
+
+            var source = new BindingSource();
+            source.DataSource = series.Index.Chapters;
+            dgvIndex.DataSource = source;
+            dgvIndex.Refresh();
         }
 
         private void Status(string msg)

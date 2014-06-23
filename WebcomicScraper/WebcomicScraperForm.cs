@@ -37,6 +37,7 @@ namespace WebcomicScraper
         /*
          * TODO IDEAS:
          * --Stupid chapternames aren't distinct; get better naming convention for storing chapters (ordinal? index in the list?)
+         * --WebBrowser not thread-safe; use webclient requests instead (like in Scraper.cs) and shove the work into the analyzebackgroundworker
          * --Resource list for saving URLs
          *      L--> save learned domains/series
          * --Classes of delegates for populating index data, scraping pages, etc for each series/domain(PA, mangahere, etc).
@@ -65,6 +66,7 @@ namespace WebcomicScraper
             try
             {
                 Cursor.Current = Cursors.WaitCursor;
+                Status("Loading...");
 
                 browser = new WebBrowser();
                 browser.ScriptErrorsSuppressed = true;

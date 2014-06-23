@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.Drawing;
+using System.IO.Compression;
 using WebcomicScraper.Comic;
 using HtmlAgilityPack;
 
@@ -156,16 +157,18 @@ namespace WebcomicScraper
 
             if (chapter.Pages.Count > 0)
             {
-                foreach (Page page in chapter.Pages)
+                chapter.Pages.AsParallel().AsOrdered().ForAll(page =>
                 {
-                    var pagePath = Path.Combine(chapterPath, page.PageNum.ToString() + ".jpeg");
+                    var pagePath = Path.Combine(chapterPath, page.PageNum.ToString("000") + ".jpeg");
                     page.Image.Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                });
+
+                if (!Scraper.IsDirectoryEmpty(chapterPath))
+                {
+                    var targetPath = Path.Combine(seriesPath, chapter.Title.Trim() + ".cbz");
+                    ZipFile.CreateFromDirectory(chapterPath, targetPath);
+                    Directory.Delete(chapterPath, true);
                 }
-                //chapter.Pages.AsParallel().ForAll(page =>
-                //{
-                //    var pagePath = Path.Combine(chapterPath, page.PageNum.ToString());
-                //    page.Image.Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
-                //});
             }
 
             return true;
@@ -175,7 +178,7 @@ namespace WebcomicScraper
         {
             var result = new List<Page>();
 
-            nodes.AsParallel().ForAll(node =>
+            nodes.AsParallel().AsOrdered().ForAll(node =>
             {
                 using (WebClient webClient = new WebClient()) {
                     try
@@ -203,7 +206,7 @@ namespace WebcomicScraper
                 };
             });
 
-            return result.OrderBy(p => p.PageNum).ToList();
+            return result.ToList();
         }
 
         //uhh is this thread safe?
@@ -243,6 +246,11 @@ namespace WebcomicScraper
             result = Image.FromStream(stream);
 
             return result;
+        }
+
+        private static bool IsDirectoryEmpty(string path)
+        {
+            return !Directory.EnumerateFileSystemEntries(path).Any();
         }
 
         /* Note: none of this shit worked, there are stupid combined pages masquerading as single pages. so we do things the hard way

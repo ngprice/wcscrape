@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading.Tasks;
 using WebcomicScraper.Comic;
 using System.Threading;
 
@@ -140,10 +141,14 @@ namespace WebcomicScraper
         {
             var rows = e.Argument as DataGridViewSelectedRowCollection;
             var seriesPath = Path.Combine(txtSaveDir.Text, LoadedSeries.Title);
-            foreach (DataGridViewRow row in rows) //TODO: PLINQ here
-            {
-                e.Result = Scraper.DownloadChapter(row.DataBoundItem as Chapter, seriesPath);
-            }
+
+            e.Result = true;
+
+            Parallel.ForEach(rows.Cast<DataGridViewRow>(), currentRow =>
+                {
+                    if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, seriesPath))
+                        e.Result = false;
+                });
         }
 
         private void download_Completed(object sender, RunWorkerCompletedEventArgs e)

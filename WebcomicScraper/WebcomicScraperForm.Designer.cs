@@ -258,6 +258,7 @@
             this.Controls.Add(this.btnScrape);
             this.Controls.Add(this.txtIndex);
             this.Controls.Add(this.label1);
+            this.MinimumSize = new System.Drawing.Size(760, 411);
             this.Name = "WebcomicScraperForm";
             this.Text = "Webcomic Scraper";
             this.groupBox1.ResumeLayout(false);

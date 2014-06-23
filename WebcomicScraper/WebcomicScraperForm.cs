@@ -35,8 +35,23 @@ namespace WebcomicScraper
         }
 
         /*
-         * TODO:
+         * TODO IDEAS:
+         * --Stupid chapternames aren't distinct; get better naming convention for storing chapters (ordinal? index in the list?)
          * --Resource list for saving URLs
+         *      L--> save learned domains/series
+         * --Classes of delegates for populating index data, scraping pages, etc for each series/domain(PA, mangahere, etc).
+         *      L--> Try all prior delegates when running a new comic, log which ones work in resources
+         * --scraper types: index (table of contents), browser (next buttons)
+         * --Save series metadata in resources (pages downloaded, file locations, table of contents, last extraction, etc)
+         *      L--> serialize Series objects as XML, save to file? http://msdn.microsoft.com/en-us/library/ms172873.aspx
+         * --Learning/teaching section: feed in a comic URL and the link to the next button, it does the rest
+         *      L--> perhaps implement chapter table of contents identification too?
+         * 
+         * PIE IN THE SKY:
+         * --RSS feeds for comic updates
+         * --Serialize extract methods (FileOperation delegates, etc) as XML, for incremental updates?
+         *      L--> FTP for distribution? Mort's NAS?
+         * --Multi-comic layout option when creating .CBR's... would need to create new image files
          * */
 
         private void btnScrape_Click(object sender, EventArgs e)

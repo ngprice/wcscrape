@@ -130,7 +130,10 @@ namespace WebcomicScraper
 
                 var dateNode = node.SelectSingleNode("span[@class='right']");
                 if (dateNode != null)
+                {
                     DateTime.TryParse(dateNode.InnerText, out date);
+                    chapter.DatePublished = date;
+                }
 
                 result.Add(chapter);
             }

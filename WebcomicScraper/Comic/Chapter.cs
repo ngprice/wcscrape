@@ -15,18 +15,15 @@ namespace WebcomicScraper.Comic
         public string SourceURL { get; set; }
         public bool Converted { get; set; }
 
-        public List<Page> Pages { get; private set; }
-
-        public Chapter()
-        {
-            Pages = new List<Page>();
-        }
+        public List<Page> Pages { get; set; }
 
         public bool Downloaded
         {
             get
             {
-                return Pages.Count > 0 && !Pages.Any(p => p.Downloaded == false);
+                if (Pages != null)
+                    return Pages.Count > 0 && !Pages.Any(p => p.Downloaded == false);
+                else return false;
             }
         }
 

@@ -46,8 +46,10 @@
             this.analysisBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dgvIndex = new System.Windows.Forms.DataGridView();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnDownload = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtSaveDir = new System.Windows.Forms.TextBox();
+            this.downloadBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -68,13 +70,13 @@
             // 
             this.txtIndex.Location = new System.Drawing.Point(82, 10);
             this.txtIndex.Name = "txtIndex";
-            this.txtIndex.Size = new System.Drawing.Size(342, 20);
+            this.txtIndex.Size = new System.Drawing.Size(261, 20);
             this.txtIndex.TabIndex = 1;
             this.txtIndex.Text = "http://www.mangahere.co/manga/onepunch_man/";
             // 
             // btnScrape
             // 
-            this.btnScrape.Location = new System.Drawing.Point(433, 8);
+            this.btnScrape.Location = new System.Drawing.Point(349, 7);
             this.btnScrape.Name = "btnScrape";
             this.btnScrape.Size = new System.Drawing.Size(75, 23);
             this.btnScrape.TabIndex = 2;
@@ -182,7 +184,7 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 497);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 351);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(744, 22);
             this.statusStrip1.TabIndex = 4;
@@ -215,15 +217,6 @@
             this.dgvIndex.Size = new System.Drawing.Size(301, 239);
             this.dgvIndex.TabIndex = 0;
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Location = new System.Drawing.Point(11, 347);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(726, 145);
-            this.groupBox3.TabIndex = 6;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Output";
-            // 
             // btnDownload
             // 
             this.btnDownload.Location = new System.Drawing.Point(433, 312);
@@ -234,13 +227,31 @@
             this.btnDownload.UseVisualStyleBackColor = true;
             this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(430, 13);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(80, 13);
+            this.label6.TabIndex = 8;
+            this.label6.Text = "Save Directory:";
+            // 
+            // txtSaveDir
+            // 
+            this.txtSaveDir.Location = new System.Drawing.Point(516, 10);
+            this.txtSaveDir.Name = "txtSaveDir";
+            this.txtSaveDir.Size = new System.Drawing.Size(221, 20);
+            this.txtSaveDir.TabIndex = 9;
+            this.txtSaveDir.Text = "C:\\Users\\ngprice\\Downloads";
+            // 
             // WebcomicScraperForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(744, 519);
+            this.ClientSize = new System.Drawing.Size(744, 373);
+            this.Controls.Add(this.txtSaveDir);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.btnDownload);
-            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.groupBox1);
@@ -281,8 +292,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dgvIndex;
-        private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnDownload;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txtSaveDir;
+        private System.ComponentModel.BackgroundWorker downloadBackgroundWorker;
     }
 }
 

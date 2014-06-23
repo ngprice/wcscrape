@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Net;
+using System.Drawing;
 using WebcomicScraper.Comic;
 using HtmlAgilityPack;
-
 
 namespace WebcomicScraper
 {
@@ -138,54 +138,69 @@ namespace WebcomicScraper
             return result;
         }
 
-        public static bool DownloadChapter(Chapter chapter)
+        public static bool DownloadChapter(Chapter chapter, string seriesPath)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(GetHTML(chapter.SourceURL));
 
             //table of contents
             var contentsNodes = doc.DocumentNode.SelectNodes("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/select[1]/option");
+            chapter.Pages = Scraper.GetPages(contentsNodes);
 
-            //there's a pattern to these image names. in each thread try to guess the image name, then use xpath if that fails
-            //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_001.jpg?v=11350898681
-            //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_002.jpg?v=11350898681
-            //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_003-004.jpg?v=11350898681 //combined pages
-            //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_019-020.jpg?v=11350898681 //page 17 is actually "numbered" 19-20. annoying.
+            var chapterPath = Path.Combine(seriesPath, chapter.Title.Trim());
+            if (!Directory.Exists(chapterPath))
+                Directory.CreateDirectory(chapterPath);
 
-            //start with two pages, compare the image names. 
-            var imageElement = doc.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
-            if (imageElement != null)
+            if (chapter.Pages.Count > 0)
             {
-                Page firstPage = new Page();
-                firstPage.ImageURL = imageElement.GetAttributeValue("src", "");
-
-                var secondPageLink = doc.DocumentNode.SelectSingleNode("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/a[@class='next_page']");
-                if (secondPageLink != null && !String.IsNullOrEmpty(secondPageLink.GetAttributeValue("href","")))
+                foreach (Page page in chapter.Pages)
                 {
-                    var doc2 = new HtmlDocument();
-                    doc2.LoadHtml(GetHTML(secondPageLink.GetAttributeValue("href","")));
-
-                    Page secondPage = new Page();
-                    var imageElement2 = doc2.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
-                    if (imageElement2 != null)
-                    {
-                        secondPage.ImageURL = imageElement2.GetAttributeValue("src", "");
-
-                        //try to guess the pattern & read images directly without having to fetch whole html document for every page
-                        List<Page> predictedPages = Scraper.PredictPages(contentsNodes.Count(), firstPage.ImageURL, secondPage.ImageURL);
-
-                        if (predictedPages.Count > 0)
-                        {
-                            return DownloadPages(predictedPages);
-                        }
-                    }
+                    var pagePath = Path.Combine(chapterPath, page.PageNum.ToString() + ".jpeg");
+                    page.Image.Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
                 }
+                //chapter.Pages.AsParallel().ForAll(page =>
+                //{
+                //    var pagePath = Path.Combine(chapterPath, page.PageNum.ToString());
+                //    page.Image.Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                //});
             }
 
-
-            //contentsNodes.AsParallel().AsQueryable().
-
             return true;
+        }
+
+        private static List<Page> GetPages(HtmlNodeCollection nodes)
+        {
+            var result = new List<Page>();
+
+            nodes.AsParallel().ForAll(node =>
+            {
+                using (WebClient webClient = new WebClient()) {
+                    try
+                    {
+                        string pageHtml = webClient.DownloadString(node.GetAttributeValue("value", ""));
+
+                        var doc = new HtmlDocument();
+                        doc.LoadHtml(pageHtml);
+
+                        var imgElement = doc.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
+                        if (imgElement != null)
+                        {
+                            var page = new Page();
+                            page.PageNum = int.Parse(node.NextSibling.InnerText);
+                            page.ImageURL = imgElement.GetAttributeValue("src", "");
+                            page.Image = GetImage(page.ImageURL);
+
+                            result.Add(page);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine("Error getting pages: " + ex.Message);
+                    }
+                };
+            });
+
+            return result.OrderBy(p => p.PageNum).ToList();
         }
 
         //uhh is this thread safe?
@@ -214,80 +229,137 @@ namespace WebcomicScraper
             return data;
         }
 
-        private static List<Page> PredictPages(int iterations, params string[] urls)
+        private static Image GetImage(string url)
         {
-            var result = new List<Page>();
+            Image result = null;
 
-            for (int i = 0; i < urls.Length; i++)
-            {
-                var first = urls[i++];
-                var second = urls[i--];
-                var diff = DiffIndex(first, second);
+            HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
+            HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse();
 
-                if (diff > 0) //potential match
-                {
-                    var firstChar = first[diff];
-                    var secondChar = second[diff];
-                    int firstNum, secondNum;
-
-                    if (int.TryParse(firstChar.ToString(), out firstNum) && int.TryParse(secondChar.ToString(), out secondNum))
-                    {
-                        if (secondNum - firstNum == 1) //iterating by 1
-                        {
-                            for (int j = 1; j <= urls.Count(); j++) //create pages for the URLs we were given
-                            {
-                                var page = new Page();
-                                page.PageNum = j;
-                                page.ImageURL = urls[j - 1];
-
-                                result.Add(page);
-                            }
-
-                            int pageNumLength = 1;
-                            for (int k = diff - 1; k >= 0; k--) //work backwards through the string
-                            {
-                                int output;
-                                if (int.TryParse(first[k].ToString(), out output))
-                                    pageNumLength++;
-                                else break;
-                            }
-
-                            var formatString = new String('0', pageNumLength);
-                            var predictionTemplate = first.Substring(0, diff - pageNumLength + 1) + "{0}" + first.Substring(diff + 1, first.Length - diff - 1);
-
-                            for (int l = result.Count + 1; l <= iterations; l++) //prediction loop
-                            {
-                                var predictedPage = new Page();
-                                predictedPage.PageNum = l;
-                                predictedPage.ImageURL = String.Format(predictionTemplate, l.ToString(formatString));
-
-                                result.Add(predictedPage);
-                            }
-
-                            return result;
-                        }
-                    }
-                }
-            }
+            Stream stream = httpWebReponse.GetResponseStream();
+            result = Image.FromStream(stream);
 
             return result;
         }
 
-        private static int DiffIndex(string first, string second)
+        /* Note: none of this shit worked, there are stupid combined pages masquerading as single pages. so we do things the hard way
+         * 
+         * 
+        //there's a pattern to these image names. in each thread try to guess the image name, then use xpath if that fails
+        //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_001.jpg?v=11350898681
+        //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_002.jpg?v=11350898681
+        //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_003-004.jpg?v=11350898681 //combined pages
+        //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_019-020.jpg?v=11350898681 //page 17 is actually "numbered" 19-20. annoying.
+
+        //start with two pages, compare the image names. 
+        var imageElement = doc.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
+        if (imageElement != null)
         {
-            if (first == second)
-                return -1;
+            Page firstPage = new Page();
+            firstPage.ImageURL = imageElement.GetAttributeValue("src", "");
 
-            for (int i = 0; i < first.Length; i++)
-                if (first[i] != second[i])
-                    return i;
+            var secondPageLink = doc.DocumentNode.SelectSingleNode("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/a[@class='next_page']");
+            if (secondPageLink != null && !String.IsNullOrEmpty(secondPageLink.GetAttributeValue("href","")))
+            {
+                var doc2 = new HtmlDocument();
+                doc2.LoadHtml(GetHTML(secondPageLink.GetAttributeValue("href","")));
 
-            return 0;
+                Page secondPage = new Page();
+                var imageElement2 = doc2.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
+                if (imageElement2 != null)
+                {
+                    secondPage.ImageURL = imageElement2.GetAttributeValue("src", "");
+
+                    //try to guess the pattern & read images directly without having to fetch whole html document for every page
+                    List<Page> predictedPages = Scraper.PredictPages(contentsNodes.Count(), firstPage.ImageURL, secondPage.ImageURL);
+
+                    if (predictedPages.Count > 0)
+                    {
+                        return DownloadPages(predictedPages);
+                    }
+                }
+            }
+        }
+            
+
+        return true;
+    }
+
+    private static List<Page> PredictPages(int iterations, params string[] urls)
+    {
+        var result = new List<Page>();
+
+        for (int i = 0; i < urls.Length; i++)
+        {
+            var first = urls[i++];
+            var second = urls[i--];
+            var diff = DiffIndex(first, second);
+
+            if (diff > 0) //potential match
+            {
+                var firstChar = first[diff];
+                var secondChar = second[diff];
+                int firstNum, secondNum;
+
+                if (int.TryParse(firstChar.ToString(), out firstNum) && int.TryParse(secondChar.ToString(), out secondNum))
+                {
+                    if (secondNum - firstNum == 1) //iterating by 1
+                    {
+                        for (int j = 1; j <= urls.Count(); j++) //create pages for the URLs we were given
+                        {
+                            var page = new Page();
+                            page.PageNum = j;
+                            page.ImageURL = urls[j - 1];
+
+                            result.Add(page);
+                        }
+
+                        int pageNumLength = 1;
+                        for (int k = diff - 1; k >= 0; k--) //work backwards through the string
+                        {
+                            int output;
+                            if (int.TryParse(first[k].ToString(), out output))
+                                pageNumLength++;
+                            else break;
+                        }
+
+                        var formatString = new String('0', pageNumLength);
+                        var predictionTemplate = first.Substring(0, diff - pageNumLength + 1) + "{0}" + first.Substring(diff + 1, first.Length - diff - 1);
+
+                        for (int l = result.Count + 1; l <= iterations; l++) //prediction loop
+                        {
+                            var predictedPage = new Page();
+                            predictedPage.PageNum = l;
+                            predictedPage.ImageURL = String.Format(predictionTemplate, l.ToString(formatString));
+
+                            result.Add(predictedPage);
+                        }
+
+                        return result;
+                    }
+                }
+            }
         }
 
-        private static bool DownloadPages(List<Page> pages)
-        {
-            return true;
-        }
+        return result;
+    }
+
+    private static int DiffIndex(string first, string second)
+    {
+        if (first == second)
+            return -1;
+
+        for (int i = 0; i < first.Length; i++)
+            if (first[i] != second[i])
+                return i;
+
+        return 0;
+    }
+
+    private static bool DownloadPages(List<Page> pages)
+    {
+        return true;
+    }
+    */
     }
 }

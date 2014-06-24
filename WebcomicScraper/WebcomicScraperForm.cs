@@ -38,23 +38,27 @@ namespace WebcomicScraper
         }
 
         /*
-         * TODO IDEAS:
-         * --Stupid chapternames aren't distinct; get better naming convention for storing chapters (ordinal? index in the list?)
+         * TODO LIST:
          * --WebBrowser not thread-safe; use webclient requests instead (like in Scraper.cs) and shove the work into the analyzebackgroundworker
-         * --Resource list for saving URLs
-         *      L--> save learned domains/series
+         *      L--> cancel toggle on download button
+         *          L--> analyze disabled during this too
          * --Classes of delegates for populating index data, scraping pages, etc for each series/domain(PA, mangahere, etc).
          *      L--> Try all prior delegates when running a new comic, log which ones work in resources
+         * --Stupid chapternames aren't distinct; get better naming convention for storing chapters (ordinal? index in the list?)
+         * --Resource list for saving URLs
+         *      L--> save learned domains/series
+         *      L--> XML config for the learned xpath links, etc
+         * --Learning/teaching section: feed in a comic URL and the link to the next button, it does the rest
+         *      L--> perhaps implement chapter table of contents identification too?
          * --scraper types: index (table of contents), browser (next buttons)
          * --Save series metadata in resources (pages downloaded, file locations, table of contents, last extraction, etc)
          *      L--> serialize Series objects as XML, save to file? http://msdn.microsoft.com/en-us/library/ms172873.aspx
-         * --Learning/teaching section: feed in a comic URL and the link to the next button, it does the rest
-         *      L--> perhaps implement chapter table of contents identification too?
          * 
          * PIE IN THE SKY:
          * --RSS feeds for comic updates
          * --Serialize extract methods (FileOperation delegates, etc) as XML, for incremental updates?
          *      L--> FTP for distribution? Mort's NAS?
+         *      L--> other people's XML config files
          * --Multi-comic layout option when creating .CBR's... would need to create new image files
          * */
 
@@ -142,7 +146,7 @@ namespace WebcomicScraper
         private void download_DoWork(object sender, DoWorkEventArgs e)
         {
             var rows = e.Argument as DataGridViewSelectedRowCollection;
-            var seriesPath = Path.Combine(txtSaveDir.Text, LoadedSeries.Title);
+            var seriesPath = Path.Combine(txtSaveDir.Text, Scraper.CleanPath(LoadedSeries.Title));
             int? threads = (int?)nudThreads.Value;
 
             e.Result = true;

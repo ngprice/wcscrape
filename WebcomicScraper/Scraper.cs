@@ -7,6 +7,7 @@ using System.Net;
 using System.Drawing;
 using System.IO.Compression;
 using System.Threading;
+using System.Text.RegularExpressions;
 using WebcomicScraper.Comic;
 using HtmlAgilityPack;
 
@@ -153,9 +154,9 @@ namespace WebcomicScraper
 
             //table of contents
             var contentsNodes = doc.DocumentNode.SelectNodes("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/select[1]/option");
-            chapter.Pages = Scraper.GetPages(contentsNodes);
+            chapter.Pages = GetPages(contentsNodes);
 
-            var chapterPath = Path.Combine(seriesPath, chapter.Title.Trim());
+            var chapterPath = Path.Combine(seriesPath, CleanPath(chapter.Title.Trim()));
             if (!Directory.Exists(chapterPath))
                 Directory.CreateDirectory(chapterPath);
 
@@ -170,10 +171,11 @@ namespace WebcomicScraper
                     {
                         try
                         {
-                            var pagePath = Path.Combine(chapterPath, page.PageNum.ToString("000") + ".jpeg");
+                            var pagePath = Path.Combine(chapterPath, page.PageNum.ToString("0000") + ".jpeg");
                             if (!File.Exists(pagePath))
                             {
-                                new Bitmap(GetImage(page.ImageURL)).Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg); //Bitmap is workaround for GDI+ error in Image.Save()
+                                using (var img = new Bitmap(GetImage(page.ImageURL)))
+                                    img.Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg); //Bitmap is workaround for GDI+ error in Image.Save()
                                 successful = true;
                             }
                             else successful = true;
@@ -192,9 +194,12 @@ namespace WebcomicScraper
                     }
                 });
 
-                if (!Scraper.IsDirectoryEmpty(chapterPath))
+                if (!IsDirectoryEmpty(chapterPath))
                 {
-                    var targetPath = Path.Combine(seriesPath, chapter.Title.Trim() + ".cbz");
+                    var targetPath = Path.Combine(seriesPath, CleanPath(chapter.Title.Trim()) + ".cbz");
+                    if (File.Exists(targetPath))
+                        File.Delete(targetPath); //overwrite
+
                     ZipFile.CreateFromDirectory(chapterPath, targetPath);
                     Directory.Delete(chapterPath, true);
                 }
@@ -279,6 +284,14 @@ namespace WebcomicScraper
         private static bool IsDirectoryEmpty(string path)
         {
             return !Directory.EnumerateFileSystemEntries(path).Any();
+        }
+
+        public static string CleanPath(string path) //it is ridiculous that Path.Combine does not do this
+        {
+            string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+            Regex r = new Regex(String.Format("[{0}]", Regex.Escape(regexSearch)));
+
+            return r.Replace(path, "");
         }
 
         /* Note: none of this shit worked, there are stupid combined pages masquerading as single pages. so we do things the hard way

@@ -161,7 +161,7 @@ namespace WebcomicScraper
 
             if (chapter.Pages.Count > 0)
             {
-                chapter.Pages.AsParallel().WithDegreeOfParallelism(threads.Value).ForAll(page =>
+                chapter.Pages.AsParallel().ForAll(page =>
                 {
                     int tries = 0;
                     int maxTries = 5;
@@ -172,7 +172,10 @@ namespace WebcomicScraper
                         {
                             var pagePath = Path.Combine(chapterPath, page.PageNum.ToString("000") + ".jpeg");
                             if (!File.Exists(pagePath))
+                            {
                                 new Bitmap(GetImage(page.ImageURL)).Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg); //Bitmap is workaround for GDI+ error in Image.Save()
+                                successful = true;
+                            }
                         }
                         catch (System.Net.WebException) //timed out
                         {

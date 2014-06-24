@@ -50,11 +50,14 @@
             this.label6 = new System.Windows.Forms.Label();
             this.txtSaveDir = new System.Windows.Forms.TextBox();
             this.downloadBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.label7 = new System.Windows.Forms.Label();
+            this.nudThreads = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvIndex)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudThreads)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -244,11 +247,29 @@
             this.txtSaveDir.TabIndex = 9;
             this.txtSaveDir.Text = "C:\\Users\\ngprice\\Downloads";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(513, 317);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(49, 13);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "Threads:";
+            // 
+            // nudThreads
+            // 
+            this.nudThreads.Location = new System.Drawing.Point(564, 315);
+            this.nudThreads.Name = "nudThreads";
+            this.nudThreads.Size = new System.Drawing.Size(34, 20);
+            this.nudThreads.TabIndex = 11;
+            // 
             // WebcomicScraperForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(744, 373);
+            this.Controls.Add(this.nudThreads);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.txtSaveDir);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.btnDownload);
@@ -268,6 +289,7 @@
             this.statusStrip1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvIndex)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudThreads)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -297,6 +319,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtSaveDir;
         private System.ComponentModel.BackgroundWorker downloadBackgroundWorker;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.NumericUpDown nudThreads;
     }
 }
 

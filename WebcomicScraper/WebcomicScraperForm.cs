@@ -22,6 +22,8 @@ namespace WebcomicScraper
         {
             InitializeComponent();
             InitializeBackgroundWorkers();
+
+            nudThreads.Value = Math.Min(Environment.ProcessorCount, 64);
         }
 
         private void InitializeBackgroundWorkers()
@@ -141,12 +143,13 @@ namespace WebcomicScraper
         {
             var rows = e.Argument as DataGridViewSelectedRowCollection;
             var seriesPath = Path.Combine(txtSaveDir.Text, LoadedSeries.Title);
+            int? threads = (int?)nudThreads.Value;
 
             e.Result = true;
 
             Parallel.ForEach(rows.Cast<DataGridViewRow>(), currentRow =>
                 {
-                    if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, seriesPath))
+                    if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, seriesPath, threads))
                         e.Result = false;
                 });
         }

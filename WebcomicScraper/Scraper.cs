@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Drawing;
 using System.IO.Compression;
+using System.Threading;
 using WebcomicScraper.Comic;
 using HtmlAgilityPack;
 
@@ -142,8 +143,11 @@ namespace WebcomicScraper
             return result;
         }
 
-        public static bool DownloadChapter(Chapter chapter, string seriesPath)
+        public static bool DownloadChapter(Chapter chapter, string seriesPath, int? threads)
         {
+            if (!threads.HasValue)
+                threads = Math.Min(Environment.ProcessorCount, 64);
+
             var doc = new HtmlDocument();
             doc.LoadHtml(GetHTML(chapter.SourceURL));
 
@@ -157,10 +161,31 @@ namespace WebcomicScraper
 
             if (chapter.Pages.Count > 0)
             {
-                chapter.Pages.AsParallel().AsOrdered().ForAll(page =>
+                chapter.Pages.AsParallel().WithDegreeOfParallelism(threads.Value).ForAll(page =>
                 {
-                    var pagePath = Path.Combine(chapterPath, page.PageNum.ToString("000") + ".jpeg");
-                    page.Image.Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    int tries = 0;
+                    int maxTries = 5;
+                    bool successful = false;
+                    while (!successful)
+                    {
+                        try
+                        {
+                            var pagePath = Path.Combine(chapterPath, page.PageNum.ToString("000") + ".jpeg");
+                            if (!File.Exists(pagePath))
+                                new Bitmap(GetImage(page.ImageURL)).Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg); //Bitmap is workaround for GDI+ error in Image.Save()
+                        }
+                        catch (System.Net.WebException) //timed out
+                        {
+                            if (tries > maxTries)
+                                throw;
+                            tries++;
+                            Thread.Sleep(3333); //looks like butts
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+                    }
                 });
 
                 if (!Scraper.IsDirectoryEmpty(chapterPath))
@@ -194,7 +219,6 @@ namespace WebcomicScraper
                             var page = new Page();
                             page.PageNum = int.Parse(node.NextSibling.InnerText);
                             page.ImageURL = imgElement.GetAttributeValue("src", "");
-                            page.Image = GetImage(page.ImageURL);
 
                             result.Add(page);
                         }

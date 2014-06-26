@@ -62,30 +62,30 @@ namespace WebcomicScraper
          * --Multi-comic layout option when creating .CBR's... would need to create new image files
          * */
 
-        private void btnScrape_Click(object sender, EventArgs e)
-        {
-            if (String.IsNullOrEmpty(txtIndex.Text))
-            {
-                Status("There's nothing there, idiot.");
-                return;
-            }
+        //private void btnScrape_Click(object sender, EventArgs e)
+        //{
+        //    if (String.IsNullOrEmpty(txtIndex.Text))
+        //    {
+        //        Status("There's nothing there, idiot.");
+        //        return;
+        //    }
 
-            try
-            {
-                Cursor.Current = Cursors.WaitCursor;
-                Status("Loading...");
+        //    try
+        //    {
+        //        Cursor.Current = Cursors.WaitCursor;
+        //        Status("Loading...");
 
-                browser = new WebBrowser();
-                browser.ScriptErrorsSuppressed = true;
-                browser.Navigate(txtIndex.Text);
+        //        browser = new WebBrowser();
+        //        browser.ScriptErrorsSuppressed = true;
+        //        browser.Navigate(txtIndex.Text);
 
-                browser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(DocumentLoaded);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+        //        browser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(DocumentLoaded);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
 
         private void DocumentLoaded(object sender, WebBrowserDocumentCompletedEventArgs e)
         {

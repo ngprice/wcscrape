@@ -28,15 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WebcomicScraperForm));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtArtist = new System.Windows.Forms.TextBox();
+            this.txtAuthor = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtTitle = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.txtSummary = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.txtArtist = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtAuthor = new System.Windows.Forms.TextBox();
-            this.txtTitle = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblURL = new System.Windows.Forms.Label();
+            this.txtURL = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ToolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.analysisBackgroundWorker = new System.ComponentModel.BackgroundWorker();
@@ -53,6 +57,9 @@
             this.downloadBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.previewPictureBox = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToConfigxmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,11 +69,8 @@
             this.teachNewSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSeriesLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            this.treeView1 = new System.Windows.Forms.TreeView();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.previewPictureBox = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvIndex)).BeginInit();
@@ -75,10 +79,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudThreads)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -92,27 +95,44 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Series Info";
             // 
-            // txtSummary
+            // tableLayoutPanel3
             // 
-            this.txtSummary.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSummary.Location = new System.Drawing.Point(62, 63);
-            this.txtSummary.Multiline = true;
-            this.txtSummary.Name = "txtSummary";
-            this.txtSummary.ReadOnly = true;
-            this.txtSummary.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSummary.Size = new System.Drawing.Size(134, 188);
-            this.txtSummary.TabIndex = 16;
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 59F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel3.Controls.Add(this.label3, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.txtArtist, 1, 2);
+            this.tableLayoutPanel3.Controls.Add(this.txtAuthor, 1, 1);
+            this.tableLayoutPanel3.Controls.Add(this.label4, 0, 2);
+            this.tableLayoutPanel3.Controls.Add(this.txtTitle, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.label2, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.txtSummary, 1, 4);
+            this.tableLayoutPanel3.Controls.Add(this.label5, 0, 4);
+            this.tableLayoutPanel3.Controls.Add(this.lblURL, 0, 3);
+            this.tableLayoutPanel3.Controls.Add(this.txtURL, 1, 3);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 5;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(199, 254);
+            this.tableLayoutPanel3.TabIndex = 17;
             // 
-            // label5
+            // label3
             // 
-            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 60);
-            this.label5.Name = "label5";
-            this.label5.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.label5.Size = new System.Drawing.Size(53, 18);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "Summary:";
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 20);
+            this.label3.Name = "label3";
+            this.label3.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label3.Size = new System.Drawing.Size(41, 19);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Author:";
             // 
             // txtArtist
             // 
@@ -123,17 +143,6 @@
             this.txtArtist.Size = new System.Drawing.Size(134, 20);
             this.txtArtist.TabIndex = 14;
             // 
-            // label4
-            // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 41);
-            this.label4.Name = "label4";
-            this.label4.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.label4.Size = new System.Drawing.Size(33, 18);
-            this.label4.TabIndex = 13;
-            this.label4.Text = "Artist:";
-            // 
             // txtAuthor
             // 
             this.txtAuthor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -142,6 +151,17 @@
             this.txtAuthor.ReadOnly = true;
             this.txtAuthor.Size = new System.Drawing.Size(134, 20);
             this.txtAuthor.TabIndex = 12;
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(23, 40);
+            this.label4.Name = "label4";
+            this.label4.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label4.Size = new System.Drawing.Size(33, 19);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "Artist:";
             // 
             // txtTitle
             // 
@@ -152,27 +172,58 @@
             this.txtTitle.Size = new System.Drawing.Size(134, 20);
             this.txtTitle.TabIndex = 11;
             // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 21);
-            this.label3.Name = "label3";
-            this.label3.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.label3.Size = new System.Drawing.Size(41, 18);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "Author:";
-            // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(26, 1);
+            this.label2.Location = new System.Drawing.Point(26, 0);
             this.label2.Name = "label2";
-            this.label2.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.label2.Size = new System.Drawing.Size(30, 18);
+            this.label2.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label2.Size = new System.Drawing.Size(30, 19);
             this.label2.TabIndex = 9;
             this.label2.Text = "Title:";
+            // 
+            // txtSummary
+            // 
+            this.txtSummary.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSummary.Location = new System.Drawing.Point(62, 83);
+            this.txtSummary.Multiline = true;
+            this.txtSummary.Name = "txtSummary";
+            this.txtSummary.ReadOnly = true;
+            this.txtSummary.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtSummary.Size = new System.Drawing.Size(134, 168);
+            this.txtSummary.TabIndex = 16;
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 80);
+            this.label5.Name = "label5";
+            this.label5.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.label5.Size = new System.Drawing.Size(53, 19);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "Summary:";
+            // 
+            // lblURL
+            // 
+            this.lblURL.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblURL.AutoSize = true;
+            this.lblURL.Location = new System.Drawing.Point(24, 60);
+            this.lblURL.Name = "lblURL";
+            this.lblURL.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.lblURL.Size = new System.Drawing.Size(32, 19);
+            this.lblURL.TabIndex = 17;
+            this.lblURL.Text = "URL:";
+            // 
+            // txtURL
+            // 
+            this.txtURL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtURL.Location = new System.Drawing.Point(62, 63);
+            this.txtURL.Name = "txtURL";
+            this.txtURL.ReadOnly = true;
+            this.txtURL.Size = new System.Drawing.Size(134, 20);
+            this.txtURL.TabIndex = 18;
             // 
             // statusStrip1
             // 
@@ -330,6 +381,35 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Library";
             // 
+            // treeView1
+            // 
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(3, 16);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(105, 254);
+            this.treeView1.TabIndex = 0;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.previewPictureBox);
+            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox4.Location = new System.Drawing.Point(331, 3);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(174, 273);
+            this.groupBox4.TabIndex = 7;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Cover Art";
+            // 
+            // previewPictureBox
+            // 
+            this.previewPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.previewPictureBox.Location = new System.Drawing.Point(3, 16);
+            this.previewPictureBox.Margin = new System.Windows.Forms.Padding(10);
+            this.previewPictureBox.Name = "previewPictureBox";
+            this.previewPictureBox.Size = new System.Drawing.Size(168, 254);
+            this.previewPictureBox.TabIndex = 7;
+            this.previewPictureBox.TabStop = false;
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -397,59 +477,6 @@
             this.openSeriesLocationToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.openSeriesLocationToolStripMenuItem.Text = "Open Series Location";
             // 
-            // tableLayoutPanel3
-            // 
-            this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 59F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel3.Controls.Add(this.txtSummary, 1, 3);
-            this.tableLayoutPanel3.Controls.Add(this.label3, 0, 1);
-            this.tableLayoutPanel3.Controls.Add(this.txtArtist, 1, 2);
-            this.tableLayoutPanel3.Controls.Add(this.txtAuthor, 1, 1);
-            this.tableLayoutPanel3.Controls.Add(this.label4, 0, 2);
-            this.tableLayoutPanel3.Controls.Add(this.txtTitle, 1, 0);
-            this.tableLayoutPanel3.Controls.Add(this.label2, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.label5, 0, 3);
-            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 16);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 4;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(199, 254);
-            this.tableLayoutPanel3.TabIndex = 17;
-            // 
-            // treeView1
-            // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(3, 16);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(105, 254);
-            this.treeView1.TabIndex = 0;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.previewPictureBox);
-            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox4.Location = new System.Drawing.Point(331, 3);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(174, 273);
-            this.groupBox4.TabIndex = 7;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Cover Art";
-            // 
-            // previewPictureBox
-            // 
-            this.previewPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.previewPictureBox.Location = new System.Drawing.Point(3, 16);
-            this.previewPictureBox.Margin = new System.Windows.Forms.Padding(10);
-            this.previewPictureBox.Name = "previewPictureBox";
-            this.previewPictureBox.Size = new System.Drawing.Size(168, 254);
-            this.previewPictureBox.TabIndex = 7;
-            this.previewPictureBox.TabStop = false;
-            // 
             // WebcomicScraperForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -458,11 +485,14 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(799, 363);
             this.Name = "WebcomicScraperForm";
             this.Text = "Webcomic Scraper";
             this.groupBox1.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -474,12 +504,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudThreads)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
-            this.tableLayoutPanel3.ResumeLayout(false);
-            this.tableLayoutPanel3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -525,6 +553,8 @@
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.PictureBox previewPictureBox;
+        private System.Windows.Forms.Label lblURL;
+        private System.Windows.Forms.TextBox txtURL;
     }
 }
 

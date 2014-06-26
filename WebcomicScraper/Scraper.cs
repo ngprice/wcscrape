@@ -185,7 +185,7 @@ namespace WebcomicScraper
                             if (tries > maxTries)
                                 throw;
                             tries++;
-                            Thread.Sleep(3333); //looks like butts
+                            Thread.Sleep(333); //looks like butts
                         }
                         catch
                         {
@@ -200,7 +200,8 @@ namespace WebcomicScraper
                     if (File.Exists(targetPath))
                         File.Delete(targetPath); //overwrite
 
-                    ZipFile.CreateFromDirectory(chapterPath, targetPath);
+                    var zipStream = new GZipStream(new FileStream(chapterPath, FileMode.Open), CompressionMode.Compress);
+                    zipStream.CompressDirectory(chapterPath, targetPath);
                     Directory.Delete(chapterPath, true);
                 }
             }

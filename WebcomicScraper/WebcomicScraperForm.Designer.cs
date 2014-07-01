@@ -43,7 +43,6 @@
             this.txtURL = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ToolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.analysisBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dgvIndex = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -68,7 +67,9 @@
             this.seriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.teachNewSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openSeriesLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fillBeginningToEndToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fillEndToBeginningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -297,11 +298,11 @@
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(17, 6);
+            this.label6.Location = new System.Drawing.Point(11, 6);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(80, 13);
+            this.label6.Size = new System.Drawing.Size(86, 13);
             this.label6.TabIndex = 14;
-            this.label6.Text = "Save Directory:";
+            this.label6.Text = "Library Directory:";
             // 
             // progressBar1
             // 
@@ -429,53 +430,78 @@
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.Text = "&File";
             // 
             // saveToConfigxmlToolStripMenuItem
             // 
             this.saveToConfigxmlToolStripMenuItem.Name = "saveToConfigxmlToolStripMenuItem";
-            this.saveToConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.saveToConfigxmlToolStripMenuItem.Text = "Save Library";
+            this.saveToConfigxmlToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToConfigxmlToolStripMenuItem.ShowShortcutKeys = false;
+            this.saveToConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToConfigxmlToolStripMenuItem.Text = "&Save Library";
             // 
             // importConfigxmlToolStripMenuItem
             // 
             this.importConfigxmlToolStripMenuItem.Name = "importConfigxmlToolStripMenuItem";
-            this.importConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.importConfigxmlToolStripMenuItem.Text = "Load Library";
+            this.importConfigxmlToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.importConfigxmlToolStripMenuItem.ShowShortcutKeys = false;
+            this.importConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.importConfigxmlToolStripMenuItem.Text = "&Open Library";
+            this.importConfigxmlToolStripMenuItem.Click += new System.EventHandler(this.importConfigxmlToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Text = "E&xit";
             // 
             // seriesToolStripMenuItem
             // 
             this.seriesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.teachNewSeriesToolStripMenuItem,
             this.refreshCurrentSeriesToolStripMenuItem,
-            this.openSeriesLocationToolStripMenuItem});
+            this.indexToolStripMenuItem});
             this.seriesToolStripMenuItem.Name = "seriesToolStripMenuItem";
             this.seriesToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
-            this.seriesToolStripMenuItem.Text = "Series";
+            this.seriesToolStripMenuItem.Text = "&Series";
             // 
             // teachNewSeriesToolStripMenuItem
             // 
             this.teachNewSeriesToolStripMenuItem.Name = "teachNewSeriesToolStripMenuItem";
-            this.teachNewSeriesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.teachNewSeriesToolStripMenuItem.Text = "Teach New Series";
+            this.teachNewSeriesToolStripMenuItem.ShowShortcutKeys = false;
+            this.teachNewSeriesToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.teachNewSeriesToolStripMenuItem.Text = "&Teach New Series";
+            this.teachNewSeriesToolStripMenuItem.Click += new System.EventHandler(this.teachNewSeriesToolStripMenuItem_Click);
             // 
             // refreshCurrentSeriesToolStripMenuItem
             // 
             this.refreshCurrentSeriesToolStripMenuItem.Name = "refreshCurrentSeriesToolStripMenuItem";
-            this.refreshCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.refreshCurrentSeriesToolStripMenuItem.Text = "Refresh Current Series";
+            this.refreshCurrentSeriesToolStripMenuItem.ShowShortcutKeys = false;
+            this.refreshCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.refreshCurrentSeriesToolStripMenuItem.Text = "&Refresh Current Series";
             // 
-            // openSeriesLocationToolStripMenuItem
+            // indexToolStripMenuItem
             // 
-            this.openSeriesLocationToolStripMenuItem.Name = "openSeriesLocationToolStripMenuItem";
-            this.openSeriesLocationToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.openSeriesLocationToolStripMenuItem.Text = "Open Series Location";
+            this.indexToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fillBeginningToEndToolStripMenuItem,
+            this.fillEndToBeginningToolStripMenuItem});
+            this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.indexToolStripMenuItem.Text = "&Index";
+            // 
+            // fillBeginningToEndToolStripMenuItem
+            // 
+            this.fillBeginningToEndToolStripMenuItem.Name = "fillBeginningToEndToolStripMenuItem";
+            this.fillBeginningToEndToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fillBeginningToEndToolStripMenuItem.Text = "Fill &Forward";
+            this.fillBeginningToEndToolStripMenuItem.ToolTipText = "Fills the index using next links";
+            // 
+            // fillEndToBeginningToolStripMenuItem
+            // 
+            this.fillEndToBeginningToolStripMenuItem.Name = "fillEndToBeginningToolStripMenuItem";
+            this.fillEndToBeginningToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fillEndToBeginningToolStripMenuItem.Text = "Fill &Backward";
+            this.fillEndToBeginningToolStripMenuItem.ToolTipText = "Fills the index using previous links";
             // 
             // WebcomicScraperForm
             // 
@@ -518,7 +544,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel ToolStripStatusLabel1;
-        private System.ComponentModel.BackgroundWorker analysisBackgroundWorker;
         private System.Windows.Forms.TextBox txtSummary;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtArtist;
@@ -540,7 +565,6 @@
         private System.Windows.Forms.ToolStripMenuItem seriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem teachNewSeriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem refreshCurrentSeriesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openSeriesLocationToolStripMenuItem;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TextBox txtSaveDir;
         private System.Windows.Forms.Label label6;
@@ -555,6 +579,9 @@
         private System.Windows.Forms.PictureBox previewPictureBox;
         private System.Windows.Forms.Label lblURL;
         private System.Windows.Forms.TextBox txtURL;
+        private System.Windows.Forms.ToolStripMenuItem indexToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fillBeginningToEndToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fillEndToBeginningToolStripMenuItem;
     }
 }
 

@@ -9,139 +9,84 @@ using System.IO.Compression;
 using System.Threading;
 using System.Text.RegularExpressions;
 using WebcomicScraper.Comic;
+using WebcomicScraper.Sources;
 using HtmlAgilityPack;
 
 namespace WebcomicScraper
 {
+     /*
+     * TODO LIST:
+     * --WebBrowser not thread-safe; use webclient requests instead (like in Scraper.cs) and shove the work into the analyzebackgroundworker
+     *      L--> cancel toggle on download button
+     *          L--> analyze disabled during this too
+     * --Classes of delegates for populating index data, scraping pages, etc for each series/domain(PA, mangahere, etc).
+     *      L--> Try all prior delegates when running a new comic, log which ones work in resources
+     * --Stupid chapternames aren't distinct; get better naming convention for storing chapters (ordinal? index in the list?)
+     * --Resource list for saving URLs
+     *      L--> save learned domains/series
+     *      L--> XML config for the learned xpath links, etc
+     * --Learning/teaching section: feed in a comic URL and the link to the next button, it does the rest
+     *      L--> perhaps implement chapter table of contents identification too?
+     * --scraper types: index (table of contents), browser (next buttons)
+     * --Save series metadata in resources (pages downloaded, file locations, table of contents, last extraction, etc)
+     *      L--> serialize Series objects as XML, save to file? http://msdn.microsoft.com/en-us/library/ms172873.aspx
+     * 
+     * PIE IN THE SKY:
+     * --RSS feeds for comic updates
+     * --Serialize extract methods (FileOperation delegates, etc) as XML, for incremental updates?
+     *      L--> FTP for distribution? Mort's NAS?
+     *      L--> other people's XML config files
+     * --Multi-comic layout option when creating .CBR's... would need to create new image files
+     * */
+
+    public delegate object FindOperation(HtmlDocument doc);
+
     public static class Scraper
     {
-        public static Series LoadSeries(System.Windows.Forms.HtmlDocument doc)
+        private static readonly Dictionary<string, ISource> _dicNativeSourceHosts
+            = new Dictionary<string, ISource>
+            {
+                { "www.mangahere.co", new MangaHere()}
+            };
+
+        public static Series LoadSeries(Uri URL, System.Windows.Forms.HtmlDocument doc)
         {
             var agilityDoc = new HtmlDocument();
             agilityDoc.LoadHtml(doc.Body.InnerHtml);
-            return new Series(agilityDoc);
+            return new Series(URL, agilityDoc);
         }
 
         public static bool AnalyzeSeries(Series series)
         {
-            return (ParseSeries(series) && ParseIndex(series));
+            return (ParseSeries(series));
         }
 
         private static bool ParseSeries(Series series)
         {
-            series.Title = FindString(FindTitle, series.Document);
-            series.Summary = FindString(FindDescription, series.Document);
-            series.Author = FindString(FindAuthor, series.Document);
-            series.Artist = FindString(FindArtist, series.Document);
-            series.CoverImageURL = FindString(FindCover, series.Document);
+            if (_dicNativeSourceHosts.ContainsKey(series.URL.Host))
+            {
+                var source = _dicNativeSourceHosts[series.URL.Host];
 
-            return !String.IsNullOrEmpty(series.Title); //return false if we didn't find at least a title
+                series.Title = FindString(source.FindTitle, series.Document);
+                series.Summary = FindString(source.FindDescription, series.Document);
+                series.Author = FindString(source.FindAuthor, series.Document);
+                series.Artist = FindString(source.FindArtist, series.Document);
+                series.CoverImageURL = FindString(source.FindCover, series.Document);
+
+                return (!String.IsNullOrEmpty(series.Title) && ParseIndex(series)); //return false if we didn't find at least a title
+            }
+            else return true; //new series
         }
 
         private static bool ParseIndex(Series series)
         {
-            series.Index.Chapters = FindChapters(series.Document);
+            series.Index.Chapters = series.Source.FindChapters(series.Document);
             return series.Index.Chapters.Count() > 0; //return false if we didn't find any chapters
         }
-
-        private delegate object FindOperation(HtmlDocument doc);
 
         private static string FindString(FindOperation op, HtmlDocument doc)
         {
             return (string)op(doc);
-        }
-
-        private static string FindTitle(HtmlDocument doc)
-        {
-            var result = String.Empty;
-
-            var titleElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div/h1[@class='title']");
-            if (titleElement != null)
-                result = titleElement.InnerText.Trim();
-
-            return result;
-        }
-
-        private static string FindDescription(HtmlDocument doc)
-        {
-            var result = String.Empty;
-
-            var descriptionElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul//p[@id='show']");
-            if (descriptionElement != null)
-            {
-                descriptionElement.RemoveChild(descriptionElement.LastChild);
-                result = System.Net.WebUtility.HtmlDecode(descriptionElement.InnerText.Trim());
-            }
-            return result;
-        }
-
-        private static string FindAuthor(HtmlDocument doc)
-        {
-            var result = String.Empty;
-
-            var authorElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul//label[text()='Author(s):']/../a[1]");
-            if (authorElement != null)
-                result = authorElement.InnerText.Trim();
-
-            return result;
-        }
-
-        private static string FindArtist(HtmlDocument doc)
-        {
-            var result = String.Empty;
-
-            var artistElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul//label[text()='Artist(s):']/../a[1]");
-            if (artistElement != null)
-                result = artistElement.InnerText.Trim();
-
-            return result;
-        }
-
-        private static string FindCover(HtmlDocument doc)
-        {
-            var result = String.Empty;
-
-            var coverElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='manga_detail_top clearfix']/img[@class='img' and contains(@src,'cover')]");
-            if (coverElement != null)
-                result = coverElement.GetAttributeValue("src", "");
-
-            return result;
-        }
-
-        private static List<Chapter> FindChapters(HtmlDocument doc)
-        {
-            var result = new List<Chapter>();
-
-            foreach (var node in doc.DocumentNode.SelectNodes("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='detail_list']/ul[1]/li"))
-            {
-                var chapter = new Chapter();
-                var date = new DateTime();
-
-                var anchorNode = node.SelectSingleNode("span/a[@class][@href]");
-                if (anchorNode != null)
-                {
-                    chapter.Title = anchorNode.InnerText;
-                    chapter.SourceURL = anchorNode.GetAttributeValue("href", "");
-                }
-
-                var newNode = node.SelectSingleNode("i[@class='new']");
-                var titleNode = node.SelectSingleNode("span[@class='left']");
-                if (newNode != null)
-                    chapter.Description = newNode.InnerText;
-                else if (titleNode != null)
-                    chapter.Description = titleNode.LastChild.InnerText;
-
-                var dateNode = node.SelectSingleNode("span[@class='right']");
-                if (dateNode != null)
-                {
-                    DateTime.TryParse(dateNode.InnerText, out date);
-                    chapter.DatePublished = date;
-                }
-
-                result.Add(chapter);
-            }
-
-            return result;
         }
 
         public static bool DownloadChapter(Chapter chapter, string seriesPath, int? threads)
@@ -151,10 +96,6 @@ namespace WebcomicScraper
 
             var doc = new HtmlDocument();
             doc.LoadHtml(GetHTML(chapter.SourceURL));
-
-            //table of contents
-            var contentsNodes = doc.DocumentNode.SelectNodes("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/select[1]/option");
-            chapter.Pages = GetPages(contentsNodes);
 
             var chapterPath = Path.Combine(seriesPath, CleanPath(chapter.Title.Trim()));
             if (!Directory.Exists(chapterPath))
@@ -185,7 +126,7 @@ namespace WebcomicScraper
                             if (tries > maxTries)
                                 throw;
                             tries++;
-                            Thread.Sleep(3333); //looks like butts
+                            Thread.Sleep(333); //looks like butts
                         }
                         catch
                         {
@@ -208,41 +149,6 @@ namespace WebcomicScraper
             return true;
         }
 
-        private static List<Page> GetPages(HtmlNodeCollection nodes)
-        {
-            var result = new List<Page>();
-
-            nodes.AsParallel().AsOrdered().ForAll(node =>
-            {
-                using (WebClient webClient = new WebClient()) {
-                    try
-                    {
-                        string pageHtml = webClient.DownloadString(node.GetAttributeValue("value", ""));
-
-                        var doc = new HtmlDocument();
-                        doc.LoadHtml(pageHtml);
-
-                        var imgElement = doc.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
-                        if (imgElement != null)
-                        {
-                            var page = new Page();
-                            page.PageNum = int.Parse(node.NextSibling.InnerText);
-                            page.ImageURL = imgElement.GetAttributeValue("src", "");
-
-                            result.Add(page);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.Error.WriteLine("Error getting pages: " + ex.Message);
-                    }
-                };
-            });
-
-            return result.ToList();
-        }
-
-        //uhh is this thread safe?
         private static string GetHTML(string fromURL)
         {
             string data = String.Empty;
@@ -293,125 +199,5 @@ namespace WebcomicScraper
 
             return r.Replace(path, "");
         }
-
-        /* Note: none of this shit worked, there are stupid combined pages masquerading as single pages. so we do things the hard way
-         * 
-         * 
-        //there's a pattern to these image names. in each thread try to guess the image name, then use xpath if that fails
-        //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_001.jpg?v=11350898681
-        //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_002.jpg?v=11350898681
-        //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_003-004.jpg?v=11350898681 //combined pages
-        //http://z.mhcdn.net/store/manga/11912/001.0/compressed/lopm_001_019-020.jpg?v=11350898681 //page 17 is actually "numbered" 19-20. annoying.
-
-        //start with two pages, compare the image names. 
-        var imageElement = doc.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
-        if (imageElement != null)
-        {
-            Page firstPage = new Page();
-            firstPage.ImageURL = imageElement.GetAttributeValue("src", "");
-
-            var secondPageLink = doc.DocumentNode.SelectSingleNode("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/a[@class='next_page']");
-            if (secondPageLink != null && !String.IsNullOrEmpty(secondPageLink.GetAttributeValue("href","")))
-            {
-                var doc2 = new HtmlDocument();
-                doc2.LoadHtml(GetHTML(secondPageLink.GetAttributeValue("href","")));
-
-                Page secondPage = new Page();
-                var imageElement2 = doc2.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
-                if (imageElement2 != null)
-                {
-                    secondPage.ImageURL = imageElement2.GetAttributeValue("src", "");
-
-                    //try to guess the pattern & read images directly without having to fetch whole html document for every page
-                    List<Page> predictedPages = Scraper.PredictPages(contentsNodes.Count(), firstPage.ImageURL, secondPage.ImageURL);
-
-                    if (predictedPages.Count > 0)
-                    {
-                        return DownloadPages(predictedPages);
-                    }
-                }
-            }
-        }
-            
-
-        return true;
-    }
-
-    private static List<Page> PredictPages(int iterations, params string[] urls)
-    {
-        var result = new List<Page>();
-
-        for (int i = 0; i < urls.Length; i++)
-        {
-            var first = urls[i++];
-            var second = urls[i--];
-            var diff = DiffIndex(first, second);
-
-            if (diff > 0) //potential match
-            {
-                var firstChar = first[diff];
-                var secondChar = second[diff];
-                int firstNum, secondNum;
-
-                if (int.TryParse(firstChar.ToString(), out firstNum) && int.TryParse(secondChar.ToString(), out secondNum))
-                {
-                    if (secondNum - firstNum == 1) //iterating by 1
-                    {
-                        for (int j = 1; j <= urls.Count(); j++) //create pages for the URLs we were given
-                        {
-                            var page = new Page();
-                            page.PageNum = j;
-                            page.ImageURL = urls[j - 1];
-
-                            result.Add(page);
-                        }
-
-                        int pageNumLength = 1;
-                        for (int k = diff - 1; k >= 0; k--) //work backwards through the string
-                        {
-                            int output;
-                            if (int.TryParse(first[k].ToString(), out output))
-                                pageNumLength++;
-                            else break;
-                        }
-
-                        var formatString = new String('0', pageNumLength);
-                        var predictionTemplate = first.Substring(0, diff - pageNumLength + 1) + "{0}" + first.Substring(diff + 1, first.Length - diff - 1);
-
-                        for (int l = result.Count + 1; l <= iterations; l++) //prediction loop
-                        {
-                            var predictedPage = new Page();
-                            predictedPage.PageNum = l;
-                            predictedPage.ImageURL = String.Format(predictionTemplate, l.ToString(formatString));
-
-                            result.Add(predictedPage);
-                        }
-
-                        return result;
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private static int DiffIndex(string first, string second)
-    {
-        if (first == second)
-            return -1;
-
-        for (int i = 0; i < first.Length; i++)
-            if (first[i] != second[i])
-                return i;
-
-        return 0;
-    }
-
-    private static bool DownloadPages(List<Page> pages)
-    {
-        return true;
-    }
-    */
     }
 }

@@ -66,6 +66,7 @@ namespace WebcomicScraper
             if (_dicNativeSourceHosts.ContainsKey(series.URL.Host))
             {
                 var source = _dicNativeSourceHosts[series.URL.Host];
+                series.Source = source;
 
                 series.Title = FindString(source.FindTitle, series.Document);
                 series.Summary = FindString(source.FindDescription, series.Document);

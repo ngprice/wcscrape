@@ -314,9 +314,9 @@
             // 
             // btnDownload
             // 
-            this.btnDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDownload.Location = new System.Drawing.Point(3, 29);
             this.btnDownload.Name = "btnDownload";
             this.btnDownload.Size = new System.Drawing.Size(94, 20);
@@ -437,7 +437,7 @@
             this.saveToConfigxmlToolStripMenuItem.Name = "saveToConfigxmlToolStripMenuItem";
             this.saveToConfigxmlToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToConfigxmlToolStripMenuItem.ShowShortcutKeys = false;
-            this.saveToConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.saveToConfigxmlToolStripMenuItem.Text = "&Save Library";
             // 
             // importConfigxmlToolStripMenuItem
@@ -445,14 +445,14 @@
             this.importConfigxmlToolStripMenuItem.Name = "importConfigxmlToolStripMenuItem";
             this.importConfigxmlToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.importConfigxmlToolStripMenuItem.ShowShortcutKeys = false;
-            this.importConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.importConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.importConfigxmlToolStripMenuItem.Text = "&Open Library";
             this.importConfigxmlToolStripMenuItem.Click += new System.EventHandler(this.importConfigxmlToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             // 
             // seriesToolStripMenuItem
@@ -492,14 +492,14 @@
             // fillBeginningToEndToolStripMenuItem
             // 
             this.fillBeginningToEndToolStripMenuItem.Name = "fillBeginningToEndToolStripMenuItem";
-            this.fillBeginningToEndToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fillBeginningToEndToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.fillBeginningToEndToolStripMenuItem.Text = "Fill &Forward";
             this.fillBeginningToEndToolStripMenuItem.ToolTipText = "Fills the index using next links";
             // 
             // fillEndToBeginningToolStripMenuItem
             // 
             this.fillEndToBeginningToolStripMenuItem.Name = "fillEndToBeginningToolStripMenuItem";
-            this.fillEndToBeginningToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fillEndToBeginningToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.fillEndToBeginningToolStripMenuItem.Text = "Fill &Backward";
             this.fillEndToBeginningToolStripMenuItem.ToolTipText = "Fills the index using previous links";
             // 

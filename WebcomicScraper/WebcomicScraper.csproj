@@ -42,7 +42,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,8 +54,10 @@
   <ItemGroup>
     <Compile Include="Comic\Chapter.cs" />
     <Compile Include="Comic\Index.cs" />
+    <Compile Include="Comic\Library.cs" />
     <Compile Include="Comic\Page.cs" />
     <Compile Include="Comic\Series.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Sources\MangaHere.cs" />
     <Compile Include="Sources\ISource.cs" />
     <Compile Include="TeachNewSeries.cs">
@@ -101,7 +102,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Sources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

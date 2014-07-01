@@ -141,7 +141,8 @@ namespace WebcomicScraper
                     if (File.Exists(targetPath))
                         File.Delete(targetPath); //overwrite
 
-                    ZipFile.CreateFromDirectory(chapterPath, targetPath);
+                    var zipStream = new GZipStream(new FileStream(chapterPath, FileMode.Open), CompressionMode.Compress);
+                    zipStream.CompressDirectory(chapterPath, targetPath);
                     Directory.Delete(chapterPath, true);
                 }
             }

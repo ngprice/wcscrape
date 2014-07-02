@@ -5,7 +5,22 @@ using System.Text;
 
 namespace WebcomicScraper.Comic
 {
-    class Library
+    public class Library
     {
+        public List<Series> lstSeries { get; set; }
+
+        public Library()
+        {
+            lstSeries = new List<Series>();
+        }
+        public void AddSeries(Series series)
+        {
+
+        }
+
+        public void RemoveSeries(Series series)
+        {
+
+        }
     }
 }

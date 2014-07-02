@@ -15,7 +15,33 @@ namespace WebcomicScraper
 {
     public partial class WebcomicScraperForm : Form
     {
-        public Series LoadedSeries { get; set; }
+        private Library _activeLibrary;
+        private Series _activeSeries;
+        private bool _bLibraryDirty;
+        public Library LoadedLibrary 
+        { 
+            get
+            {
+                return _activeLibrary;
+            }
+            set
+            {
+                _activeLibrary = value;
+                DisplayLibrary(_activeLibrary);
+            }
+        }
+        public Series LoadedSeries 
+        { 
+            get
+            {
+                return _activeSeries;
+            }
+            set
+            {
+                _activeSeries = value;
+                DisplaySeries(_activeSeries);
+            }
+        }
 
         public WebcomicScraperForm()
         {
@@ -23,6 +49,7 @@ namespace WebcomicScraper
             InitializeBackgroundWorkers();
 
             nudThreads.Value = Math.Min(Environment.ProcessorCount, 64);
+            LoadedLibrary = new Library();
         }
 
         private void InitializeBackgroundWorkers()
@@ -55,7 +82,7 @@ namespace WebcomicScraper
 
             Parallel.ForEach(rows.Cast<DataGridViewRow>(), currentRow =>
                 {
-                    if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, seriesPath, threads))
+                    if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, LoadedSeries.Title, seriesPath, threads))
                         e.Result = false;
                 });
         }
@@ -94,14 +121,30 @@ namespace WebcomicScraper
             txtArtist.Text = series.Artist;
             txtSummary.Text = series.Summary;
 
-            previewPictureBox.WaitOnLoad = false;
-            previewPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            previewPictureBox.LoadAsync(series.CoverImageURL);
+            if (!String.IsNullOrEmpty(series.CoverImageURL))
+            {
+                previewPictureBox.WaitOnLoad = false;
+                previewPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                previewPictureBox.LoadAsync(series.CoverImageURL);
+            }
 
-            var source = new BindingSource();
-            source.DataSource = series.Index.Chapters;
-            dgvIndex.DataSource = source;
-            dgvIndex.Refresh();
+            if (series.Index.Chapters.Count() > 0)
+            {
+                var source = new BindingSource();
+                source.DataSource = series.Index.Chapters;
+                dgvIndex.DataSource = source;
+                dgvIndex.Columns[4].Visible = false;
+                foreach (DataGridViewRow row in dgvIndex.Rows)
+                {
+                    row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
+                }
+                dgvIndex.Refresh();
+            }
+        }
+
+        private void DisplayLibrary(Library library)
+        {
+
         }
 
         private void Status(string msg)
@@ -112,12 +155,23 @@ namespace WebcomicScraper
 
         private void teachNewSeriesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var teachNewSeriesForm = new TeachNewSeries();
-            if (teachNewSeriesForm.ShowDialog() == DialogResult.OK)
-                DisplaySeries(teachNewSeriesForm.NewSeries);
+            using (var teachNewSeriesForm = new LearnNewSeries())
+            {
+                if (teachNewSeriesForm.ShowDialog() == DialogResult.OK) //Save
+                {
+                    var newSeries = teachNewSeriesForm.NewSeries;
+                    LoadedSeries = newSeries;
+                    LoadedLibrary.AddSeries(newSeries);
+                }
+            }
         }
 
         private void importConfigxmlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void saveToConfigxmlToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }

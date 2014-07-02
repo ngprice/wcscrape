@@ -16,6 +16,7 @@ namespace WebcomicScraper
 {
      /*
      * TODO LIST:
+     * --First/last don't need XPath links (they don't change); find the next/prev buttons by their anchor links, store their xpath from HtmlAgilityPack
      * --WebBrowser not thread-safe; use webclient requests instead (like in Scraper.cs) and shove the work into the analyzebackgroundworker
      *      L--> cancel toggle on download button
      *          L--> analyze disabled during this too
@@ -39,8 +40,6 @@ namespace WebcomicScraper
      * --Multi-comic layout option when creating .CBR's... would need to create new image files
      * */
 
-    public delegate object FindOperation(HtmlDocument doc);
-
     public static class Scraper
     {
         private static readonly Dictionary<string, ISource> _dicNativeSourceHosts
@@ -63,16 +62,16 @@ namespace WebcomicScraper
 
         private static bool ParseSeries(Series series)
         {
-            if (_dicNativeSourceHosts.ContainsKey(series.URL.Host))
+            if (_dicNativeSourceHosts.ContainsKey(series.SeedURL.Host))
             {
-                var source = _dicNativeSourceHosts[series.URL.Host];
+                var source = _dicNativeSourceHosts[series.SeedURL.Host];
                 series.Source = source;
 
-                series.Title = FindString(source.FindTitle, series.Document);
-                series.Summary = FindString(source.FindDescription, series.Document);
-                series.Author = FindString(source.FindAuthor, series.Document);
-                series.Artist = FindString(source.FindArtist, series.Document);
-                series.CoverImageURL = FindString(source.FindCover, series.Document);
+                series.Title = source.FindTitle(series.Document);
+                series.Summary = source.FindDescription(series.Document);
+                series.Author = source.FindAuthor(series.Document);
+                series.Artist = source.FindArtist(series.Document);
+                series.CoverImageURL = source.FindCover(series.Document);
 
                 return (!String.IsNullOrEmpty(series.Title) && ParseIndex(series)); //return false if we didn't find at least a title
             }
@@ -85,12 +84,7 @@ namespace WebcomicScraper
             return series.Index.Chapters.Count() > 0; //return false if we didn't find any chapters
         }
 
-        private static string FindString(FindOperation op, HtmlDocument doc)
-        {
-            return (string)op(doc);
-        }
-
-        public static bool DownloadChapter(Chapter chapter, string seriesPath, int? threads)
+        public static bool DownloadChapter(Chapter chapter, string seriesTitle, string seriesPath, int? threads)
         {
             if (!threads.HasValue)
                 threads = Math.Min(Environment.ProcessorCount, 64);
@@ -98,7 +92,7 @@ namespace WebcomicScraper
             var doc = new HtmlDocument();
             doc.LoadHtml(GetHTML(chapter.SourceURL));
 
-            var chapterPath = Path.Combine(seriesPath, CleanPath(chapter.Title.Trim()));
+            var chapterPath = Path.Combine(seriesPath, CleanPath(String.Join(" ", seriesTitle, chapter.Num.ToString("0000"), "-", chapter.Description).Trim().Substring(0, 100)));
             if (!Directory.Exists(chapterPath))
                 Directory.CreateDirectory(chapterPath);
 
@@ -124,9 +118,8 @@ namespace WebcomicScraper
                         }
                         catch (System.Net.WebException) //timed out
                         {
-                            if (tries > maxTries)
+                            if (tries++ > maxTries)
                                 throw;
-                            tries++;
                             Thread.Sleep(333); //looks like butts
                         }
                         catch

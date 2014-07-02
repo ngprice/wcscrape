@@ -70,15 +70,18 @@ namespace WebcomicScraper.Sources
         public List<Chapter> FindChapters(HtmlDocument doc)
         {
             var result = new List<Chapter>();
+            int ctr = 0;
 
             foreach (var node in doc.DocumentNode.SelectNodes("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='detail_list']/ul[1]/li"))
             {
+                ctr++;
                 var chapter = new Chapter();
                 var date = new DateTime();
 
                 var anchorNode = node.SelectSingleNode("span/a[@class][@href]");
                 if (anchorNode != null)
                 {
+                    chapter.Num = ctr;
                     chapter.Title = anchorNode.InnerText;
                     chapter.SourceURL = anchorNode.GetAttributeValue("href", "");
                 }
@@ -98,20 +101,20 @@ namespace WebcomicScraper.Sources
                 }
 
                 result.Add(chapter);
-
-                //table of contents
-                var contentsNodes = doc.DocumentNode.SelectNodes("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/select[1]/option");
-                chapter.Pages = GetPages(contentsNodes);
             }
 
+            result.Reverse();
             return result;
         }
 
-        public List<Page> GetPages(HtmlNodeCollection nodes)
+        public List<Page> GetPages(HtmlDocument chapterDoc)
         {
             var result = new List<Page>();
 
-            nodes.AsParallel().AsOrdered().ForAll(node =>
+            //table of contents
+            var contentsNodes = chapterDoc.DocumentNode.SelectNodes("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/select[1]/option");
+
+            contentsNodes.AsParallel().AsOrdered().ForAll(node =>
             {
                 using (WebClient webClient = new WebClient())
                 {
@@ -119,10 +122,10 @@ namespace WebcomicScraper.Sources
                     {
                         string pageHtml = webClient.DownloadString(node.GetAttributeValue("value", ""));
 
-                        var doc = new HtmlDocument();
-                        doc.LoadHtml(pageHtml);
+                        var pageDoc = new HtmlDocument();
+                        pageDoc.LoadHtml(pageHtml);
 
-                        var imgElement = doc.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
+                        var imgElement = pageDoc.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
                         if (imgElement != null)
                         {
                             var page = new Page();

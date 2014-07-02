@@ -15,6 +15,6 @@ namespace WebcomicScraper.Sources
         string FindArtist(HtmlDocument doc);
         string FindCover(HtmlDocument doc);
         List<Chapter> FindChapters(HtmlDocument doc);
-        List<Page> GetPages(HtmlNodeCollection nodes);
+        List<Page> GetPages(HtmlDocument doc);
     }
 }

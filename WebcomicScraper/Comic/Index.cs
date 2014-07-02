@@ -13,5 +13,10 @@ namespace WebcomicScraper.Comic
     public class Index
     {
         public List<Chapter> Chapters { get; set; }
+
+        public Index()
+        {
+            Chapters = new List<Chapter>();
+        }
     }
 }

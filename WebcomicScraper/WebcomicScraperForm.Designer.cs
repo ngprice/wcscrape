@@ -292,17 +292,16 @@
             this.txtSaveDir.Name = "txtSaveDir";
             this.txtSaveDir.Size = new System.Drawing.Size(191, 20);
             this.txtSaveDir.TabIndex = 15;
-            this.txtSaveDir.Text = "C:\\Users\\ngprice\\Downloads";
             // 
             // label6
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(11, 6);
+            this.label6.Location = new System.Drawing.Point(17, 6);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(86, 13);
+            this.label6.Size = new System.Drawing.Size(80, 13);
             this.label6.TabIndex = 14;
-            this.label6.Text = "Library Directory:";
+            this.label6.Text = "Save Directory:";
             // 
             // progressBar1
             // 
@@ -413,11 +412,13 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.BackColor = System.Drawing.Color.LightSteelBlue;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.seriesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.ShowItemToolTips = true;
             this.menuStrip1.Size = new System.Drawing.Size(878, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
@@ -517,6 +518,8 @@
             this.MinimumSize = new System.Drawing.Size(799, 363);
             this.Name = "WebcomicScraperForm";
             this.Text = "Webcomic Scraper";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.WebcomicScraperForm_FormClosed);
+            this.Load += new System.EventHandler(this.WebcomicScraperForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();

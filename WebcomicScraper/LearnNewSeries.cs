@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using WebcomicScraper.Comic;
+using HtmlAgilityPack;
 
 namespace WebcomicScraper
 {
@@ -15,6 +16,14 @@ namespace WebcomicScraper
     {
         private bool _bLoaded;
         public Series NewSeries { get; set; }
+
+        private readonly Dictionary<int, Link> _dicRowLink = new Dictionary<int, Link>() //got to be a better way
+        {
+            {5, new Link()}, //Next
+            {6, new Link()}, //Prev
+            {7, new Link()}, //First
+            {8, new Link()}  //Last
+        };
  
         public LearnNewSeries()
         {
@@ -29,24 +38,11 @@ namespace WebcomicScraper
             analysisBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(analysis_ProgressChanged);
         }
 
-        private void DocumentLoaded(object sender, WebBrowserDocumentCompletedEventArgs e)
-        {
-            WebBrowser browser = (WebBrowser)sender;
-            NewSeries = Scraper.LoadSeries(browser.Url, browser.Document);
-            Scraper.AnalyzeSeries(NewSeries);
-
-            browser.DocumentCompleted -= DocumentLoaded;
-            browser.Navigating += new WebBrowserNavigatingEventHandler(webBrowser1_Navigating);
-            //browser.Stop();
-            _bLoaded = true;
-        }
-
         private void analysis_DoWork(object sender, DoWorkEventArgs e)
         {
             _bLoaded = false;
             webBrowser1.Navigating -= webBrowser1_Navigating;
-            webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(DocumentLoaded);
-            //webBrowser1.ProgressChanged += new WebBrowserProgressChangedEventHandler(ProgressChanged);
+            webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
 
             webBrowser1.ScriptErrorsSuppressed = true;
             webBrowser1.Navigate(txtURL.Text);
@@ -75,14 +71,40 @@ namespace WebcomicScraper
             Status(String.Format("Analysis {0}% complete.", e.ProgressPercentage));
         }
 
-        //private void ProgressChanged(object sender, WebBrowserProgressChangedEventArgs e)
-        //{
-        //    if (e.CurrentProgress == e.MaximumProgress)
-        //    {
-        //        var browser = sender as WebBrowser;
-        //        browser.Navigating += new WebBrowserNavigatingEventHandler(webBrowser1_Navigating);
-        //    }
-        //}
+        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            WebBrowser browser = (WebBrowser)sender;
+            var agilityDoc = new HtmlAgilityPack.HtmlDocument();
+            agilityDoc.LoadHtml(browser.Document.Body.InnerHtml);
+
+            NewSeries = Scraper.LoadSeries(browser.Url, agilityDoc);
+            Scraper.AnalyzeSeries(NewSeries);
+
+            browser.Document.MouseUp += new HtmlElementEventHandler(htmlDocument_Click);
+            browser.DocumentCompleted -= webBrowser1_DocumentCompleted;
+            browser.Navigating += new WebBrowserNavigatingEventHandler(webBrowser1_Navigating);
+            //browser.Stop();
+            _bLoaded = true;
+        }
+
+        //http://stackoverflow.com/questions/20736331/get-xpath-from-clicked-htmlelement-in-webbrowsercontrol
+        private void htmlDocument_Click(object sender, HtmlElementEventArgs e)
+        {
+            var browserDoc = (System.Windows.Forms.HtmlDocument)sender;
+            var element = browserDoc.GetElementFromPoint(e.ClientMousePosition);
+
+            var uniqueId = Guid.NewGuid().ToString();
+            element.Id = uniqueId;
+
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(element.Document.GetElementsByTagName("html")[0].OuterHtml);
+
+            var node = doc.GetElementbyId(uniqueId);
+
+            var cellPosition = tableLayoutPanel2.GetPositionFromControl(tableLayoutPanel2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked));
+            if (_dicRowLink.ContainsKey(cellPosition.Row))
+                _dicRowLink[cellPosition.Row].XPath = node.XPath;
+        }
 
         private void webBrowser1_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
@@ -90,19 +112,23 @@ namespace WebcomicScraper
             {
                 if (e.Url.Scheme == "http" || e.Url.Scheme == "https") //toss javascript, about, ftp, etc
                 {
+                    e.Cancel = true;
+
+                    var targetUrl = e.Url.ToString();
                     var cellPosition = tableLayoutPanel2.GetPositionFromControl(tableLayoutPanel2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked));
                     cellPosition.Column++;
-                    var txtBox = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
-                    txtBox.Text = e.Url.ToString();
 
-                    cellPosition.Column--; //try to check the next radiobutton
+                    var txtBox = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
+                    txtBox.Text = targetUrl;
+
+                    if (_dicRowLink.ContainsKey(cellPosition.Row))
+                        _dicRowLink[cellPosition.Row].SampleURL = targetUrl;
+
+                    cellPosition.Column--; //check the next radiobutton
                     cellPosition.Row++;
                     var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
                     if (control is RadioButton)
-                    {
                         ((RadioButton)control).Checked = true;
-                    }
-                    e.Cancel = true;
                 }
             }
         }

@@ -116,7 +116,6 @@
             this.txtURL.Name = "txtURL";
             this.txtURL.Size = new System.Drawing.Size(325, 20);
             this.txtURL.TabIndex = 3;
-            this.txtURL.Text = "http://www.mangahere.co/manga/battle_angel_alita/";
             // 
             // label1
             // 

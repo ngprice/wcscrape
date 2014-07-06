@@ -175,5 +175,17 @@ namespace WebcomicScraper
         {
 
         }
+
+        private void WebcomicScraperForm_Load(object sender, EventArgs e)
+        {
+            txtSaveDir.Text = Properties.Settings.Default.SaveDir;
+        }
+
+        private void WebcomicScraperForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.SaveDir = txtSaveDir.Text;
+
+            Properties.Settings.Default.Save();
+        }
     }
 }

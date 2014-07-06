@@ -8,6 +8,7 @@ namespace WebcomicScraper.Comic
     public class Library
     {
         public List<Series> lstSeries { get; set; }
+        public string SaveDirectory { get; set; }
 
         public Library()
         {

@@ -48,11 +48,9 @@ namespace WebcomicScraper
                 { "www.mangahere.co", new MangaHere()}
             };
 
-        public static Series LoadSeries(Uri URL, System.Windows.Forms.HtmlDocument doc)
+        public static Series LoadSeries(Uri URL, HtmlDocument doc)
         {
-            var agilityDoc = new HtmlDocument();
-            agilityDoc.LoadHtml(doc.Body.InnerHtml);
-            return new Series(URL, agilityDoc);
+            return new Series(URL, doc);
         }
 
         public static bool AnalyzeSeries(Series series)

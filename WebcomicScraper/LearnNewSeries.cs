@@ -83,11 +83,19 @@ namespace WebcomicScraper
             browser.Document.MouseUp += new HtmlElementEventHandler(htmlDocument_Click);
             browser.DocumentCompleted -= webBrowser1_DocumentCompleted;
             browser.Navigating += new WebBrowserNavigatingEventHandler(webBrowser1_Navigating);
-            //browser.Stop();
+            browser.Stop();
+
+            if (Scraper.KnowsSource(browser.Url.Host))
+            {
+                DisplaySeries(NewSeries);
+                ToggleRadioButtons(false);
+                Status(String.Format("Natively supported host detected: {0}", browser.Url.Host));
+            }
+
             _bLoaded = true;
         }
 
-        //http://stackoverflow.com/questions/20736331/get-xpath-from-clicked-htmlelement-in-webbrowsercontrol
+        //http://stackoverflow.com/questions/20736331/get-xpath-from-clicked-htmlelement-in-webbrowsercontrol //isn't stackoverflow great
         private void htmlDocument_Click(object sender, HtmlElementEventArgs e)
         {
             var browserDoc = (System.Windows.Forms.HtmlDocument)sender;
@@ -113,24 +121,27 @@ namespace WebcomicScraper
                 if (e.Url.Scheme == "http" || e.Url.Scheme == "https") //toss javascript, about, ftp, etc
                 {
                     e.Cancel = true;
-
-                    var targetUrl = e.Url.ToString();
-                    var cellPosition = tableLayoutPanel2.GetPositionFromControl(tableLayoutPanel2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked));
-                    cellPosition.Column++;
-
-                    var txtBox = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
-                    txtBox.Text = targetUrl;
-
-                    if (_dicRowLink.ContainsKey(cellPosition.Row))
-                        _dicRowLink[cellPosition.Row].SampleURL = targetUrl;
-
-                    cellPosition.Column--; //check the next radiobutton
-                    cellPosition.Row++;
-                    var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
-                    if (control is RadioButton)
-                        ((RadioButton)control).Checked = true;
+                    CycleRadioButtonURL(e.Url.ToString());
                 }
             }
+        }
+
+        private void CycleRadioButtonURL(string url)
+        {
+            var cellPosition = tableLayoutPanel2.GetPositionFromControl(tableLayoutPanel2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked));
+            cellPosition.Column++;
+
+            var txtBox = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
+            txtBox.Text = url;
+
+            if (_dicRowLink.ContainsKey(cellPosition.Row))
+                _dicRowLink[cellPosition.Row].SampleURL = url;
+
+            cellPosition.Column--; //check the next radiobutton
+            cellPosition.Row++;
+            var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
+            if (control is RadioButton)
+                ((RadioButton)control).Checked = true;
         }
 
         private void DisplaySeries(Series series)
@@ -140,6 +151,14 @@ namespace WebcomicScraper
             txtArtist.Text = series.Artist;
             txtSummary.Text = series.Summary;
             txtCoverURL.Text = series.CoverImageURL;
+        }
+
+        private void ToggleRadioButtons(bool toggle)
+        {
+            rdbNext.Enabled = toggle;
+            rdbPrev.Enabled = toggle;
+            rdbFirst.Enabled = toggle;
+            rdbLast.Enabled = toggle;
         }
 
         private void Status(string msg)

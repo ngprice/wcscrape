@@ -75,24 +75,28 @@ namespace WebcomicScraper
         {
             WebBrowser browser = (WebBrowser)sender;
             var agilityDoc = new HtmlAgilityPack.HtmlDocument();
-            agilityDoc.LoadHtml(browser.Document.Body.InnerHtml);
-
-            NewSeries = Scraper.LoadSeries(browser.Url, agilityDoc);
-            Scraper.AnalyzeSeries(NewSeries);
-
-            browser.Document.MouseUp += new HtmlElementEventHandler(htmlDocument_Click);
-            browser.DocumentCompleted -= webBrowser1_DocumentCompleted;
-            browser.Navigating += new WebBrowserNavigatingEventHandler(webBrowser1_Navigating);
-            browser.Stop();
-
-            if (Scraper.KnowsSource(browser.Url.Host))
+            if (browser.Document != null)
             {
-                DisplaySeries(NewSeries);
-                ToggleRadioButtons(false);
-                Status(String.Format("Natively supported host detected: {0}", browser.Url.Host));
-            }
+                agilityDoc.LoadHtml(browser.Document.Body.InnerHtml);
 
-            _bLoaded = true;
+                NewSeries = Scraper.LoadSeries(browser.Url, agilityDoc);
+                Scraper.AnalyzeSeries(NewSeries);
+
+                browser.Document.MouseUp += new HtmlElementEventHandler(htmlDocument_Click);
+                browser.DocumentCompleted -= webBrowser1_DocumentCompleted;
+                browser.Navigating += new WebBrowserNavigatingEventHandler(webBrowser1_Navigating);
+                browser.Stop();
+
+                if (Scraper.KnowsSource(browser.Url.Host))
+                {
+                    DisplaySeries(NewSeries);
+                    ToggleRadioButtons(false);
+                    Status(String.Format("Natively supported host detected: {0}", browser.Url.Host));
+                }
+
+                _bLoaded = true;
+            }
+            else Status("Failed to load page: " + browser.Url);
         }
 
         //http://stackoverflow.com/questions/20736331/get-xpath-from-clicked-htmlelement-in-webbrowsercontrol //isn't stackoverflow great

@@ -18,6 +18,8 @@ namespace WebcomicScraper
         private Library _activeLibrary;
         private Series _activeSeries;
         private bool _bLibraryDirty;
+        private bool _bDownloading;
+        private CancellationTokenSource _cs;
         public Library LoadedLibrary 
         { 
             get
@@ -61,16 +63,38 @@ namespace WebcomicScraper
 
         private void btnDownload_Click(object sender, EventArgs e)
         {
-            progressBar1.Value = 0;
-            var rows = dgvIndex.SelectedRows;
-            if (rows.Count > 0)
+            if (!_bDownloading)
             {
-                Cursor.Current = Cursors.WaitCursor;
-                Status("Download started.");
+                _cs = new CancellationTokenSource();
+                progressBar1.Value = 0;
+                var rows = dgvIndex.SelectedRows;
+                if (rows.Count > 0)
+                {
+                    Cursor.Current = Cursors.WaitCursor;
+                    Status("Download started.");
+                    _bDownloading = true;
 
-                downloadBackgroundWorker.RunWorkerAsync(rows);
+                    btnDownload.Text = "Cancel";
+
+                    downloadBackgroundWorker.RunWorkerAsync(rows);
+                }
+                else Status("Must select at least 1 row.");
             }
-            else Status("Must select at least 1 row.");
+            else if (!downloadBackgroundWorker.CancellationPending)
+            {
+                try
+                {
+                    downloadBackgroundWorker.CancelAsync();
+                    _cs.Cancel();
+                    _bDownloading = false;
+                    btnDownload.Enabled = false;
+                    progressBar1.Value = 0;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
 
         private void download_DoWork(object sender, DoWorkEventArgs e)
@@ -84,16 +108,33 @@ namespace WebcomicScraper
 
             Parallel.ForEach(rows.Cast<DataGridViewRow>(), currentRow =>
                 {
-                    if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, LoadedSeries, txtSaveDir.Text, threads))
-                        e.Result = false;
-                    else
-                        worker.ReportProgress((++ctr * 100) / rows.Count);
+                    try
+                    {
+                        if (!worker.CancellationPending)
+                        {
+                            if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, LoadedSeries, txtSaveDir.Text, threads, _cs))
+                                e.Result = false;
+                            else
+                                worker.ReportProgress((++ctr * 100) / rows.Count);
+                        }
+                        else
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        e.Cancel = true;
+                    }
                 });
-        }
+            }
 
         private void download_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
             Cursor.Current = Cursors.Default;
+            btnDownload.Text = "Download";
+            btnDownload.Enabled = true;
 
             if (e.Error != null)
             {

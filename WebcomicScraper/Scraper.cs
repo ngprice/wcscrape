@@ -76,7 +76,7 @@ namespace WebcomicScraper
             return series.Index.Chapters.Count() > 0; //return false if we didn't find any chapters
         }
 
-        public static bool DownloadChapter(Chapter chapter, Series series, string saveDir, int? threads)
+        public static bool DownloadChapter(Chapter chapter, Series series, string saveDir, int? threads, CancellationTokenSource cs)
         {
             if (!threads.HasValue)
                 threads = Math.Min(Environment.ProcessorCount, 64);
@@ -97,36 +97,43 @@ namespace WebcomicScraper
 
             if (chapter.Pages.Count > 0)
             {
-                chapter.Pages.AsParallel().WithDegreeOfParallelism(threads.Value).ForAll(page =>
+                try
                 {
-                    int tries = 0;
-                    int maxTries = 5;
-                    bool successful = false;
-                    while (!successful)
+                    chapter.Pages.AsParallel().WithDegreeOfParallelism(threads.Value).WithCancellation(cs.Token).ForAll(page =>
                     {
-                        try
+                        int tries = 0;
+                        int maxTries = 5;
+                        bool successful = false;
+                        while (!successful)
                         {
-                            var pagePath = Path.Combine(chapterPath, page.PageNum.ToString("0000") + ".jpeg");
-                            if (!File.Exists(pagePath))
+                            try
                             {
-                                using (var img = new Bitmap(GetImage(page.ImageURL)))
-                                    img.Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg); //Bitmap is workaround for GDI+ error in Image.Save()
-                                successful = true;
+                                cs.Token.ThrowIfCancellationRequested();
+
+                                var pagePath = Path.Combine(chapterPath, page.PageNum.ToString("0000") + ".jpeg");
+                                if (!File.Exists(pagePath))
+                                {
+                                    using (var img = new Bitmap(GetImage(page.ImageURL)))
+                                        img.Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg); //Bitmap is workaround for GDI+ error in Image.Save()
+                                    successful = true;
+                                }
+                                else successful = true;
                             }
-                            else successful = true;
-                        }
-                        catch (System.Net.WebException) //timed out
-                        {
-                            if (tries++ > maxTries)
+                            catch (System.Net.WebException) //timed out
+                            {
+                                if (tries++ > maxTries)
+                                    throw;
+                                Thread.Sleep(333); //looks like butts
+                            }
+                            catch
+                            {
                                 throw;
-                            Thread.Sleep(333); //looks like butts
+                            }
                         }
-                        catch
-                        {
-                            throw;
-                        }
-                    }
-                });
+                    });
+                }
+                catch (OperationCanceledException) { throw; }
+                catch (AggregateException) { }
 
                 if (!IsDirectoryEmpty(chapterPath))
                 {

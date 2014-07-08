@@ -72,7 +72,7 @@ namespace WebcomicScraper.Sources
             var result = new List<Chapter>();
             int ctr = 0;
 
-            foreach (var node in doc.DocumentNode.SelectNodes("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='detail_list']/ul[1]/li"))
+            foreach (var node in doc.DocumentNode.SelectNodes("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='detail_list']/ul[1]/li").Reverse())
             {
                 ctr++;
                 var chapter = new Chapter();
@@ -102,8 +102,6 @@ namespace WebcomicScraper.Sources
 
                 result.Add(chapter);
             }
-
-            result.Reverse();
             return result;
         }
 
@@ -142,7 +140,7 @@ namespace WebcomicScraper.Sources
                 };
             });
 
-            return result.ToList();
+            return result.OrderBy(p => p.PageNum).ToList();
         }
     }
 }

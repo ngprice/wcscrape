@@ -5,12 +5,13 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.Drawing;
-using System.IO.Compression;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 using WebcomicScraper.Comic;
 using WebcomicScraper.Sources;
 using HtmlAgilityPack;
+using Ionic.Zip;
 
 namespace WebcomicScraper
 {
@@ -75,15 +76,22 @@ namespace WebcomicScraper
             return series.Index.Chapters.Count() > 0; //return false if we didn't find any chapters
         }
 
-        public static bool DownloadChapter(Chapter chapter, string seriesTitle, string seriesPath, int? threads)
+        public static bool DownloadChapter(Chapter chapter, Series series, string saveDir, int? threads)
         {
             if (!threads.HasValue)
                 threads = Math.Min(Environment.ProcessorCount, 64);
 
+            var seriesPath = Path.Combine(saveDir, CleanPath(series.Title));
+
             var doc = new HtmlDocument();
             doc.LoadHtml(GetHTML(chapter.SourceURL));
 
-            var chapterPath = Path.Combine(seriesPath, CleanPath(String.Join(" ", seriesTitle, chapter.Num.ToString("0000"), "-", chapter.Description).Trim().Substring(0, 100)));
+            chapter.Pages = series.Source.GetPages(doc);
+
+            var chapterPath = Path.Combine(seriesPath, CleanPath(String.Join(" ", series.Title, chapter.Num.ToString("0000"), "-", chapter.Description).Trim()));
+            if (chapterPath.Length > 260)
+                throw new ApplicationException(String.Format("Save path cannot be longer than 260 characters: {0}", chapterPath));
+
             if (!Directory.Exists(chapterPath))
                 Directory.CreateDirectory(chapterPath);
 
@@ -122,12 +130,16 @@ namespace WebcomicScraper
 
                 if (!IsDirectoryEmpty(chapterPath))
                 {
-                    var targetPath = Path.Combine(seriesPath, CleanPath(chapter.Title.Trim()) + ".cbz");
+                    var targetPath = Path.Combine(seriesPath, CleanPath(String.Join(" ", series.Title, chapter.Num.ToString("0000"), "-", chapter.Description)).Trim() + ".cbz");
                     if (File.Exists(targetPath))
                         File.Delete(targetPath); //overwrite
 
-                    var zipStream = new GZipStream(new FileStream(chapterPath, FileMode.Open), CompressionMode.Compress);
-                    zipStream.CompressDirectory(chapterPath, targetPath);
+                    using (var zip = new ZipFile())
+                    {
+                        zip.AddDirectory(chapterPath);
+                        zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+                        zip.Save(targetPath); 
+                    }
                     Directory.Delete(chapterPath, true);
                 }
             }
@@ -178,7 +190,7 @@ namespace WebcomicScraper
             return !Directory.EnumerateFileSystemEntries(path).Any();
         }
 
-        public static string CleanPath(string path) //it is ridiculous that Path.Combine does not do this
+        private static string CleanPath(string path) //it is ridiculous that Path.Combine does not do this
         {
             string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
             Regex r = new Regex(String.Format("[{0}]", Regex.Escape(regexSearch)));

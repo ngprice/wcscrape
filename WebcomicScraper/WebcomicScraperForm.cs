@@ -61,6 +61,7 @@ namespace WebcomicScraper
 
         private void btnDownload_Click(object sender, EventArgs e)
         {
+            progressBar1.Value = 0;
             var rows = dgvIndex.SelectedRows;
             if (rows.Count > 0)
             {
@@ -74,16 +75,19 @@ namespace WebcomicScraper
 
         private void download_DoWork(object sender, DoWorkEventArgs e)
         {
+            var worker = sender as BackgroundWorker;
             var rows = e.Argument as DataGridViewSelectedRowCollection;
-            var seriesPath = Path.Combine(txtSaveDir.Text, Scraper.CleanPath(LoadedSeries.Title));
+            var ctr = 0;
             int? threads = (int?)nudThreads.Value;
 
             e.Result = true;
 
             Parallel.ForEach(rows.Cast<DataGridViewRow>(), currentRow =>
                 {
-                    if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, LoadedSeries.Title, seriesPath, threads))
+                    if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, LoadedSeries, txtSaveDir.Text, threads))
                         e.Result = false;
+                    else
+                        worker.ReportProgress((++ctr * 100) / rows.Count);
                 });
         }
 
@@ -111,7 +115,7 @@ namespace WebcomicScraper
 
         private void download_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Status(String.Format("Download {0}% complete.", e.ProgressPercentage));
+            progressBar1.Value = e.ProgressPercentage;
         }
 
         private void DisplaySeries(Series series)
@@ -120,6 +124,7 @@ namespace WebcomicScraper
             txtAuthor.Text = series.Author;
             txtArtist.Text = series.Artist;
             txtSummary.Text = series.Summary;
+            txtURL.Text = series.SeedURL.ToString();
 
             if (!String.IsNullOrEmpty(series.CoverImageURL))
             {
@@ -162,6 +167,7 @@ namespace WebcomicScraper
                     var newSeries = teachNewSeriesForm.NewSeries;
                     LoadedSeries = newSeries;
                     LoadedLibrary.AddSeries(newSeries);
+                    this.BringToFront();
                 }
             }
         }

@@ -132,16 +132,19 @@ namespace WebcomicScraper
             cellPosition.Column++;
 
             var txtBox = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
-            txtBox.Text = url;
+            if (txtBox.Enabled)
+            {
+                txtBox.Text = url;
 
-            if (_dicRowLink.ContainsKey(cellPosition.Row))
-                _dicRowLink[cellPosition.Row].SampleURL = url;
+                if (_dicRowLink.ContainsKey(cellPosition.Row))
+                    _dicRowLink[cellPosition.Row].SampleURL = url;
 
-            cellPosition.Column--; //check the next radiobutton
-            cellPosition.Row++;
-            var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
-            if (control is RadioButton)
-                ((RadioButton)control).Checked = true;
+                cellPosition.Column--; //check the next radiobutton
+                cellPosition.Row++;
+                var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
+                if (control is RadioButton)
+                    ((RadioButton)control).Checked = true;
+            }
         }
 
         private void DisplaySeries(Series series)
@@ -159,6 +162,11 @@ namespace WebcomicScraper
             rdbPrev.Enabled = toggle;
             rdbFirst.Enabled = toggle;
             rdbLast.Enabled = toggle;
+
+            txtNextLink.Enabled = toggle;
+            txtPrevLink.Enabled = toggle;
+            txtFirstLink.Enabled = toggle;
+            txtLastLink.Enabled = toggle;
         }
 
         private void Status(string msg)

@@ -12,7 +12,7 @@ using HtmlAgilityPack;
 
 namespace WebcomicScraper
 {
-    public partial class LearnNewSeries : Form
+    public partial class AddNewSeries : Form
     {
         private bool _bLoaded;
         public Series NewSeries { get; set; }
@@ -25,7 +25,7 @@ namespace WebcomicScraper
             {8, new Link()}  //Last
         };
  
-        public LearnNewSeries()
+        public AddNewSeries()
         {
             InitializeComponent();
             InitializeBackgroundWorkers();
@@ -79,7 +79,7 @@ namespace WebcomicScraper
             {
                 agilityDoc.LoadHtml(browser.Document.Body.InnerHtml);
 
-                NewSeries = Scraper.LoadSeries(browser.Url, agilityDoc);
+                NewSeries = Scraper.LoadSeries(browser.Url.ToString(), agilityDoc);
                 Scraper.AnalyzeSeries(NewSeries);
 
                 browser.Document.MouseUp += new HtmlElementEventHandler(htmlDocument_Click);

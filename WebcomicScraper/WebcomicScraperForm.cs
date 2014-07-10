@@ -20,6 +20,7 @@ namespace WebcomicScraper
         private bool _bLibraryDirty;
         private bool _bDownloading;
         private CancellationTokenSource _cs;
+
         public Library LoadedLibrary 
         { 
             get
@@ -29,9 +30,11 @@ namespace WebcomicScraper
             set
             {
                 _activeLibrary = value;
+                libraryToolStripMenuItem.Enabled = (value != null);
                 DisplayLibrary(_activeLibrary);
             }
         }
+
         public Series LoadedSeries 
         { 
             get
@@ -41,6 +44,7 @@ namespace WebcomicScraper
             set
             {
                 _activeSeries = value;
+                seriesToolStripMenuItem.Enabled = (value != null);
                 DisplaySeries(_activeSeries);
             }
         }
@@ -51,7 +55,13 @@ namespace WebcomicScraper
             InitializeBackgroundWorkers();
 
             nudThreads.Value = Math.Min(Environment.ProcessorCount, 64);
-            LoadedLibrary = new Library();
+
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.LibraryPath))
+            {
+                LoadedLibrary = Scraper.DeserializeLibrary(Properties.Settings.Default.LibraryPath);
+            }
+            else
+                LoadedLibrary = new Library();
         }
 
         private void InitializeBackgroundWorkers()
@@ -112,10 +122,14 @@ namespace WebcomicScraper
                     {
                         if (!worker.CancellationPending)
                         {
-                            if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, LoadedSeries, txtSaveDir.Text, threads, _cs))
+                            if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, LoadedSeries, txtSaveDir.Text, threads, chkConvert.Checked, _cs))
                                 e.Result = false;
                             else
+                            {
+                                currentRow.DefaultCellStyle.BackColor = Color.LightGreen;
+                                _bLibraryDirty = true;
                                 worker.ReportProgress((++ctr * 100) / rows.Count);
+                            }
                         }
                         else
                         {
@@ -135,6 +149,7 @@ namespace WebcomicScraper
             Cursor.Current = Cursors.Default;
             btnDownload.Text = "Download";
             btnDownload.Enabled = true;
+            _bDownloading = false;
 
             if (e.Error != null)
             {
@@ -161,36 +176,78 @@ namespace WebcomicScraper
 
         private void DisplaySeries(Series series)
         {
-            txtTitle.Text = series.Title;
-            txtAuthor.Text = series.Author;
-            txtArtist.Text = series.Artist;
-            txtSummary.Text = series.Summary;
-            txtURL.Text = series.SeedURL.ToString();
-
-            if (!String.IsNullOrEmpty(series.CoverImageURL))
+            if (series != null)
             {
-                previewPictureBox.WaitOnLoad = false;
-                previewPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-                previewPictureBox.LoadAsync(series.CoverImageURL);
-            }
+                txtTitle.Text = series.Title;
+                txtAuthor.Text = series.Author;
+                txtArtist.Text = series.Artist;
+                txtSummary.Text = series.Summary;
+                txtURL.Text = series.SeedURL.ToString();
 
-            if (series.Index.Chapters.Count() > 0)
-            {
-                var source = new BindingSource();
-                source.DataSource = series.Index.Chapters;
-                dgvIndex.DataSource = source;
-                dgvIndex.Columns[4].Visible = false;
-                foreach (DataGridViewRow row in dgvIndex.Rows)
+                if (!String.IsNullOrEmpty(series.CoverImageURL))
                 {
-                    row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
+                    previewPictureBox.WaitOnLoad = false;
+                    previewPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                    previewPictureBox.LoadAsync(series.CoverImageURL);
                 }
-                dgvIndex.Refresh();
+
+                if (series.Index.Chapters.Count() > 0)
+                {
+                    var source = new BindingSource();
+                    source.DataSource = series.Index.Chapters;
+                    dgvIndex.DataSource = source;
+                    dgvIndex.Columns[4].Visible = false;
+                    foreach (DataGridViewRow row in dgvIndex.Rows)
+                    {
+                        row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
+                        var chapter = (Chapter)row.DataBoundItem;
+                        if (chapter.Downloaded)
+                            row.DefaultCellStyle.BackColor = Color.LightGreen;
+                    }
+                    dgvIndex.Refresh();
+                }
+                else
+                {
+                    dgvIndex.DataSource = null;
+                    dgvIndex.Refresh();
+                }
             }
+            else //null series
+            {
+                ClearControls();
+            }
+        }
+
+        private void ClearControls()
+        {
+            txtTitle.Text = String.Empty;
+            txtAuthor.Text = String.Empty;
+            txtArtist.Text = String.Empty;
+            txtSummary.Text = String.Empty;
+            txtURL.Text = String.Empty;
+
+            previewPictureBox.Image = null;
+
+            dgvIndex.DataSource = null;
+            dgvIndex.Refresh();
+
+            listBoxLibrary.SelectedIndex = -1;
         }
 
         private void DisplayLibrary(Library library)
         {
+            var source = new BindingSource();
+            source.DataSource = library.lstSeries;
+            listBoxLibrary.DataSource = source;
+            listBoxLibrary.Refresh();
+        }
 
+        private void SaveLibrary()
+        {
+            string libraryPath = Scraper.SerializeLibrary(LoadedLibrary, txtSaveDir.Text);
+            Properties.Settings.Default.LibraryPath = libraryPath;
+            _bLibraryDirty = false;
+            Status("Library saved.");
         }
 
         private void Status(string msg)
@@ -199,28 +256,40 @@ namespace WebcomicScraper
             statusStrip1.Refresh();
         }
 
-        private void teachNewSeriesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addNewSeriesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var teachNewSeriesForm = new LearnNewSeries())
+            using (var teachNewSeriesForm = new AddNewSeries())
             {
                 if (teachNewSeriesForm.ShowDialog() == DialogResult.OK) //Save
                 {
                     var newSeries = teachNewSeriesForm.NewSeries;
-                    LoadedSeries = newSeries;
                     LoadedLibrary.AddSeries(newSeries);
-                    this.BringToFront();
+                    DisplayLibrary(LoadedLibrary);
+                    LoadedSeries = newSeries;
+                    listBoxLibrary.SelectedItem = LoadedSeries;
+                    _bLibraryDirty = true;
                 }
+                this.BringToFront();
             }
         }
 
-        private void importConfigxmlToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openLibraryToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var ofd = new OpenFileDialog();
+            ofd.InitialDirectory = txtSaveDir.Text;
+            ofd.Filter = "XML files (*.xml)|*.xml";
 
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                var filepath = ofd.FileName;
+                LoadedLibrary = Scraper.DeserializeLibrary(filepath);
+                Status("Library loaded.");
+            }
         }
 
-        private void saveToConfigxmlToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveLibraryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            SaveLibrary();
         }
 
         private void WebcomicScraperForm_Load(object sender, EventArgs e)
@@ -228,11 +297,58 @@ namespace WebcomicScraper
             txtSaveDir.Text = Properties.Settings.Default.SaveDir;
         }
 
+        private void listBoxLibrary_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (listBoxLibrary.SelectedIndex >= 0)
+                LoadedSeries = (Series)listBoxLibrary.SelectedItem;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void WebcomicScraperForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_bLibraryDirty)
+            {
+                var choice = MessageBox.Show("Save changes to the current library?", "Save Library", MessageBoxButtons.YesNoCancel);
+                switch (choice)
+                {
+                    case (DialogResult.Yes):
+                        SaveLibrary();
+                        break;
+                    case (DialogResult.Cancel):
+                        e.Cancel = true;
+                        break;
+                    case (DialogResult.No):
+                    default:
+                        break;
+                }
+            }
+        }
+
         private void WebcomicScraperForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Properties.Settings.Default.SaveDir = txtSaveDir.Text;
-
             Properties.Settings.Default.Save();
+        }
+
+        private void deleteCurrentSeriesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var choice = MessageBox.Show("Are you sure you want to delete the current series?", "Delete Series", MessageBoxButtons.YesNo);
+            switch (choice)
+            {
+                case (DialogResult.Yes):
+                    LoadedLibrary.RemoveSeries(LoadedSeries);
+                    DisplayLibrary(LoadedLibrary);
+                    LoadedSeries = null;
+                    _bLibraryDirty = true;
+                    break;
+                case (DialogResult.No):
+                default:
+                    break;
+            }
         }
     }
 }

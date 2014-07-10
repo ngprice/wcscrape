@@ -1,6 +1,6 @@
 ﻿namespace WebcomicScraper
 {
-    partial class LearnNewSeries
+    partial class AddNewSeries
     {
         /// <summary>
         /// Required designer variable.
@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LearnNewSeries));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddNewSeries));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ToolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.analysisBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnAnalyze = new System.Windows.Forms.Button();
+            this.btnLoad = new System.Windows.Forms.Button();
             this.txtURL = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -89,7 +89,7 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btnAnalyze);
+            this.panel1.Controls.Add(this.btnLoad);
             this.panel1.Controls.Add(this.txtURL);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -98,16 +98,16 @@
             this.panel1.Size = new System.Drawing.Size(497, 24);
             this.panel1.TabIndex = 6;
             // 
-            // btnAnalyze
+            // btnLoad
             // 
-            this.btnAnalyze.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnAnalyze.Location = new System.Drawing.Point(410, 1);
-            this.btnAnalyze.Name = "btnAnalyze";
-            this.btnAnalyze.Size = new System.Drawing.Size(84, 22);
-            this.btnAnalyze.TabIndex = 4;
-            this.btnAnalyze.Text = "Analyze";
-            this.btnAnalyze.UseVisualStyleBackColor = true;
-            this.btnAnalyze.Click += new System.EventHandler(this.btnAnalyze_Click);
+            this.btnLoad.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnLoad.Location = new System.Drawing.Point(410, 1);
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(84, 22);
+            this.btnLoad.TabIndex = 4;
+            this.btnLoad.Text = "Load";
+            this.btnLoad.UseVisualStyleBackColor = true;
+            this.btnLoad.Click += new System.EventHandler(this.btnAnalyze_Click);
             // 
             // txtURL
             // 
@@ -436,8 +436,9 @@
             this.webBrowser1.Size = new System.Drawing.Size(497, 298);
             this.webBrowser1.TabIndex = 7;
             // 
-            // LearnNewSeries
+            // AddNewSeries
             // 
+            this.AcceptButton = this.btnLoad;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 362);
@@ -445,8 +446,9 @@
             this.Controls.Add(this.statusStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(800, 400);
-            this.Name = "LearnNewSeries";
-            this.Text = "Learn New Series";
+            this.Name = "AddNewSeries";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Add New Series";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -468,7 +470,7 @@
         private System.Windows.Forms.ToolStripStatusLabel ToolStripStatusLabel1;
         private System.ComponentModel.BackgroundWorker analysisBackgroundWorker;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button btnAnalyze;
+        private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.TextBox txtURL;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;

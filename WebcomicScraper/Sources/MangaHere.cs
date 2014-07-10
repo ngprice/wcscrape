@@ -8,9 +8,9 @@ using HtmlAgilityPack;
 
 namespace WebcomicScraper.Sources
 {
-    public sealed class MangaHere : ISource
+    public sealed class MangaHere : Source
     {
-        public string FindTitle(HtmlDocument doc)
+        public override string FindTitle(HtmlDocument doc)
         {
             var result = String.Empty;
 
@@ -21,7 +21,7 @@ namespace WebcomicScraper.Sources
             return result;
         }
 
-        public string FindDescription(HtmlDocument doc)
+        public override string FindDescription(HtmlDocument doc)
         {
             var result = String.Empty;
 
@@ -29,12 +29,12 @@ namespace WebcomicScraper.Sources
             if (descriptionElement != null)
             {
                 descriptionElement.RemoveChild(descriptionElement.LastChild);
-                result = System.Net.WebUtility.HtmlDecode(descriptionElement.InnerText.Trim());
+                result = WebUtility.HtmlDecode(descriptionElement.InnerText.Trim());
             }
             return result;
         }
 
-        public string FindAuthor(HtmlDocument doc)
+        public override string FindAuthor(HtmlDocument doc)
         {
             var result = String.Empty;
 
@@ -45,7 +45,7 @@ namespace WebcomicScraper.Sources
             return result;
         }
 
-        public string FindArtist(HtmlDocument doc)
+        public override string FindArtist(HtmlDocument doc)
         {
             var result = String.Empty;
 
@@ -56,7 +56,7 @@ namespace WebcomicScraper.Sources
             return result;
         }
 
-        public string FindCover(HtmlDocument doc)
+        public override string FindCover(HtmlDocument doc)
         {
             var result = String.Empty;
 
@@ -67,7 +67,7 @@ namespace WebcomicScraper.Sources
             return result;
         }
 
-        public List<Chapter> FindChapters(HtmlDocument doc)
+        public override List<Chapter> FindChapters(HtmlDocument doc)
         {
             var result = new List<Chapter>();
             int ctr = 0;
@@ -82,16 +82,16 @@ namespace WebcomicScraper.Sources
                 if (anchorNode != null)
                 {
                     chapter.Num = ctr;
-                    chapter.Title = anchorNode.InnerText;
+                    chapter.Title = WebUtility.HtmlDecode(anchorNode.InnerText.Trim());
                     chapter.SourceURL = anchorNode.GetAttributeValue("href", "");
                 }
 
                 var newNode = node.SelectSingleNode("i[@class='new']");
                 var titleNode = node.SelectSingleNode("span[@class='left']");
                 if (newNode != null)
-                    chapter.Description = newNode.InnerText;
+                    chapter.Description = WebUtility.HtmlDecode(newNode.InnerText.Trim());
                 else if (titleNode != null)
-                    chapter.Description = titleNode.LastChild.InnerText;
+                    chapter.Description = WebUtility.HtmlDecode(titleNode.LastChild.InnerText.Trim());
 
                 var dateNode = node.SelectSingleNode("span[@class='right']");
                 if (dateNode != null)
@@ -105,12 +105,12 @@ namespace WebcomicScraper.Sources
             return result;
         }
 
-        public List<Page> GetPages(HtmlDocument chapterDoc)
+        public override List<Page> GetPages(HtmlDocument chapterDoc)
         {
             var result = new List<Page>();
 
             //table of contents
-            var contentsNodes = chapterDoc.DocumentNode.SelectNodes("html/body/section[1]/div[@class='go_page clearfix']/span[@class='right']/select[1]/option");
+            var contentsNodes = chapterDoc.DocumentNode.SelectNodes("html[1]/body[1]/section[1]/div[@class='go_page clearfix']/span[@class='right']/select[1]/option");
 
             contentsNodes.AsParallel().AsOrdered().ForAll(node =>
             {
@@ -123,11 +123,11 @@ namespace WebcomicScraper.Sources
                         var pageDoc = new HtmlDocument();
                         pageDoc.LoadHtml(pageHtml);
 
-                        var imgElement = pageDoc.DocumentNode.SelectSingleNode("html/body/section[@class='read_img'][@id='viewer']/a[1]/img");
+                        var imgElement = pageDoc.DocumentNode.SelectSingleNode("html[1]/body[1]/section[@class='read_img'][@id='viewer']/a[1]/img");
                         if (imgElement != null)
                         {
                             var page = new Page();
-                            page.PageNum = int.Parse(node.NextSibling.InnerText);
+                            page.Num = int.Parse(node.NextSibling.InnerText);
                             page.ImageURL = imgElement.GetAttributeValue("src", "");
 
                             result.Add(page);
@@ -140,7 +140,7 @@ namespace WebcomicScraper.Sources
                 };
             });
 
-            return result.OrderBy(p => p.PageNum).ToList();
+            return result.OrderBy(p => p.Num).ToList();
         }
     }
 }

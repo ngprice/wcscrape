@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Threading;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using System.Xml.Serialization;
 using WebcomicScraper.Comic;
 using WebcomicScraper.Sources;
 using HtmlAgilityPack;
@@ -17,13 +18,8 @@ namespace WebcomicScraper
 {
     /*
     * TODO LIST:
-    * --cancel toggle on download button
-    *      L--> analyze disabled during this too
-    * --Resource list for saving URLs
-    *      L--> save learned domains/series
-    *      L--> XML config for the learned xpath links, etc
-    * --Save series metadata in resources (pages downloaded, file locations, table of contents, last extraction, etc)
-    *      L--> serialize Series objects as XML, save to file? http://msdn.microsoft.com/en-us/library/ms172873.aspx
+    * --Index fill for next/prev style comics
+    * --Option to trim page info from chapters that have been downloaded to reduce size of wclib.xml
     * 
     * PIE IN THE SKY:
     * --RSS feeds for comic updates
@@ -36,13 +32,13 @@ namespace WebcomicScraper
 
     public static class Scraper
     {
-        private static readonly Dictionary<string, ISource> _dicNativeSourceHosts
-            = new Dictionary<string, ISource>
+        private static readonly Dictionary<string, Source> _dicNativeSourceHosts
+            = new Dictionary<string, Source>
             {
                 { "www.mangahere.co", new MangaHere()}
             };
 
-        public static Series LoadSeries(Uri URL, HtmlDocument doc)
+        public static Series LoadSeries(string URL, HtmlDocument doc)
         {
             return new Series(URL, doc);
         }
@@ -54,9 +50,10 @@ namespace WebcomicScraper
 
         private static bool ParseSeries(Series series)
         {
-            if (_dicNativeSourceHosts.ContainsKey(series.SeedURL.Host))
+            var hostUri = new Uri(series.SeedURL);
+            if (_dicNativeSourceHosts.ContainsKey(hostUri.Host))
             {
-                var source = _dicNativeSourceHosts[series.SeedURL.Host];
+                var source = _dicNativeSourceHosts[hostUri.Host];
                 series.Source = source;
 
                 series.Title = source.FindTitle(series.Document);
@@ -72,11 +69,15 @@ namespace WebcomicScraper
 
         private static bool ParseIndex(Series series)
         {
-            series.Index.Chapters = series.Source.FindChapters(series.Document);
-            return series.Index.Chapters.Count() > 0; //return false if we didn't find any chapters
+            if (series.Source != null)
+            {
+                series.Index.Chapters = series.Source.FindChapters(series.Document);
+                return series.Index.Chapters.Count() > 0; //return false if we didn't find any chapters
+            }
+            else throw new ApplicationException("Series source is null.");
         }
 
-        public static bool DownloadChapter(Chapter chapter, Series series, string saveDir, int? threads, CancellationTokenSource cs)
+        public static bool DownloadChapter(Chapter chapter, Series series, string saveDir, int? threads, bool convert, CancellationTokenSource cs)
         {
             if (!threads.HasValue)
                 threads = Math.Min(Environment.ProcessorCount, 64);
@@ -110,7 +111,7 @@ namespace WebcomicScraper
                             {
                                 cs.Token.ThrowIfCancellationRequested();
 
-                                var pagePath = Path.Combine(chapterPath, page.PageNum.ToString("0000") + ".jpeg");
+                                var pagePath = Path.Combine(chapterPath, page.Num.ToString("0000") + ".jpeg");
                                 if (!File.Exists(pagePath))
                                 {
                                     using (var img = new Bitmap(GetImage(page.ImageURL)))
@@ -135,7 +136,7 @@ namespace WebcomicScraper
                 catch (OperationCanceledException) { throw; }
                 catch (AggregateException) { }
 
-                if (!IsDirectoryEmpty(chapterPath))
+                if (!IsDirectoryEmpty(chapterPath) && convert)
                 {
                     var targetPath = Path.Combine(seriesPath, CleanPath(String.Join(" ", series.Title, chapter.Num.ToString("0000"), "-", chapter.Description)).Trim() + ".cbz");
                     if (File.Exists(targetPath))
@@ -144,11 +145,11 @@ namespace WebcomicScraper
                     using (var zip = new ZipFile())
                     {
                         zip.AddDirectory(chapterPath);
-                        zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
                         zip.Save(targetPath); 
                     }
                     Directory.Delete(chapterPath, true);
                 }
+                chapter.Downloaded = true;
             }
 
             return true;
@@ -208,6 +209,27 @@ namespace WebcomicScraper
         public static bool KnowsSource(string sourceDomain)
         {
             return _dicNativeSourceHosts.ContainsKey(sourceDomain);
+        }
+
+        public static string SerializeLibrary(Library lib, string path)
+        {
+            var serializer = new XmlSerializer(typeof(Library), Type.GetTypeArray(_dicNativeSourceHosts.Values.ToArray()));
+            var filepath = path + @"\wclib.xml";
+            var file = new StreamWriter(filepath);
+            serializer.Serialize(file, lib);
+            file.Close();
+
+            return filepath;
+        }
+
+        public static Library DeserializeLibrary(string path)
+        {
+            var deserializer = new XmlSerializer(typeof(Library), Type.GetTypeArray(_dicNativeSourceHosts.Values.ToArray()));
+            var filestream = new FileStream(path, FileMode.Open);
+            var result = (Library)deserializer.Deserialize(filestream);
+            filestream.Close();
+
+            return result;
         }
     }
 }

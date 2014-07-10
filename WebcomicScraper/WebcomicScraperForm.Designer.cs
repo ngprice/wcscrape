@@ -53,10 +53,11 @@
             this.threadPanel = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
             this.nudThreads = new System.Windows.Forms.NumericUpDown();
+            this.chkConvert = new System.Windows.Forms.CheckBox();
             this.downloadBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.listBoxLibrary = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.previewPictureBox = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -64,12 +65,16 @@
             this.saveToConfigxmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importConfigxmlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.libraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addNewSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.seriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.teachNewSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fillBeginningToEndToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fillEndToBeginningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fillForwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fillBackwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.trimToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -89,9 +94,9 @@
             // 
             this.groupBox1.Controls.Add(this.tableLayoutPanel3);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(120, 3);
+            this.groupBox1.Location = new System.Drawing.Point(144, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(205, 273);
+            this.groupBox1.Size = new System.Drawing.Size(223, 273);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Series Info";
@@ -121,7 +126,7 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(199, 254);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(217, 254);
             this.tableLayoutPanel3.TabIndex = 17;
             // 
             // label3
@@ -141,7 +146,7 @@
             this.txtArtist.Location = new System.Drawing.Point(62, 43);
             this.txtArtist.Name = "txtArtist";
             this.txtArtist.ReadOnly = true;
-            this.txtArtist.Size = new System.Drawing.Size(160, 20);
+            this.txtArtist.Size = new System.Drawing.Size(152, 20);
             this.txtArtist.TabIndex = 14;
             // 
             // txtAuthor
@@ -150,7 +155,7 @@
             this.txtAuthor.Location = new System.Drawing.Point(62, 23);
             this.txtAuthor.Name = "txtAuthor";
             this.txtAuthor.ReadOnly = true;
-            this.txtAuthor.Size = new System.Drawing.Size(160, 20);
+            this.txtAuthor.Size = new System.Drawing.Size(152, 20);
             this.txtAuthor.TabIndex = 12;
             // 
             // label4
@@ -170,7 +175,7 @@
             this.txtTitle.Location = new System.Drawing.Point(62, 3);
             this.txtTitle.Name = "txtTitle";
             this.txtTitle.ReadOnly = true;
-            this.txtTitle.Size = new System.Drawing.Size(160, 20);
+            this.txtTitle.Size = new System.Drawing.Size(152, 20);
             this.txtTitle.TabIndex = 11;
             // 
             // label2
@@ -192,7 +197,7 @@
             this.txtSummary.Name = "txtSummary";
             this.txtSummary.ReadOnly = true;
             this.txtSummary.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSummary.Size = new System.Drawing.Size(160, 201);
+            this.txtSummary.Size = new System.Drawing.Size(152, 168);
             this.txtSummary.TabIndex = 16;
             // 
             // label5
@@ -223,7 +228,7 @@
             this.txtURL.Location = new System.Drawing.Point(62, 63);
             this.txtURL.Name = "txtURL";
             this.txtURL.ReadOnly = true;
-            this.txtURL.Size = new System.Drawing.Size(160, 20);
+            this.txtURL.Size = new System.Drawing.Size(152, 20);
             this.txtURL.TabIndex = 18;
             // 
             // statusStrip1
@@ -232,7 +237,7 @@
             this.ToolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 303);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(783, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(883, 22);
             this.statusStrip1.TabIndex = 4;
             // 
             // ToolStripStatusLabel1
@@ -245,9 +250,9 @@
             this.groupBox2.Controls.Add(this.dgvIndex);
             this.groupBox2.Controls.Add(this.tableLayoutPanel2);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(511, 3);
+            this.groupBox2.Location = new System.Drawing.Point(558, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(269, 273);
+            this.groupBox2.Size = new System.Drawing.Size(322, 273);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Index";
@@ -263,7 +268,7 @@
             this.dgvIndex.Name = "dgvIndex";
             this.dgvIndex.ReadOnly = true;
             this.dgvIndex.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
-            this.dgvIndex.Size = new System.Drawing.Size(263, 176);
+            this.dgvIndex.Size = new System.Drawing.Size(316, 176);
             this.dgvIndex.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -276,6 +281,7 @@
             this.tableLayoutPanel2.Controls.Add(this.progressBar1, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.btnDownload, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.threadPanel, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.chkConvert, 1, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 192);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -283,7 +289,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(263, 78);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(316, 78);
             this.tableLayoutPanel2.TabIndex = 20;
             // 
             // txtSaveDir
@@ -291,7 +297,7 @@
             this.txtSaveDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSaveDir.Location = new System.Drawing.Point(103, 3);
             this.txtSaveDir.Name = "txtSaveDir";
-            this.txtSaveDir.Size = new System.Drawing.Size(157, 20);
+            this.txtSaveDir.Size = new System.Drawing.Size(210, 20);
             this.txtSaveDir.TabIndex = 15;
             // 
             // label6
@@ -309,14 +315,14 @@
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(103, 29);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(157, 19);
+            this.progressBar1.Size = new System.Drawing.Size(210, 19);
             this.progressBar1.TabIndex = 18;
             // 
             // btnDownload
             // 
-            this.btnDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDownload.Location = new System.Drawing.Point(3, 29);
             this.btnDownload.Name = "btnDownload";
             this.btnDownload.Size = new System.Drawing.Size(94, 20);
@@ -353,6 +359,20 @@
             this.nudThreads.Size = new System.Drawing.Size(34, 20);
             this.nudThreads.TabIndex = 17;
             // 
+            // chkConvert
+            // 
+            this.chkConvert.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkConvert.AutoSize = true;
+            this.chkConvert.Checked = true;
+            this.chkConvert.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkConvert.Location = new System.Drawing.Point(103, 55);
+            this.chkConvert.Name = "chkConvert";
+            this.chkConvert.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.chkConvert.Size = new System.Drawing.Size(102, 20);
+            this.chkConvert.TabIndex = 19;
+            this.chkConvert.Text = "Convert to .CBZ";
+            this.chkConvert.UseVisualStyleBackColor = true;
+            // 
             // downloadBackgroundWorker
             // 
             this.downloadBackgroundWorker.WorkerReportsProgress = true;
@@ -361,10 +381,10 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 26F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 21F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37F));
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox3, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox2, 3, 0);
@@ -374,35 +394,37 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(783, 279);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(883, 279);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.treeView1);
+            this.groupBox3.Controls.Add(this.listBoxLibrary);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(111, 273);
+            this.groupBox3.Size = new System.Drawing.Size(135, 273);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Library";
             // 
-            // treeView1
+            // listBoxLibrary
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(3, 16);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(105, 254);
-            this.treeView1.TabIndex = 0;
+            this.listBoxLibrary.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBoxLibrary.FormattingEnabled = true;
+            this.listBoxLibrary.Location = new System.Drawing.Point(3, 16);
+            this.listBoxLibrary.Name = "listBoxLibrary";
+            this.listBoxLibrary.Size = new System.Drawing.Size(129, 254);
+            this.listBoxLibrary.TabIndex = 0;
+            this.listBoxLibrary.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listBoxLibrary_MouseClick);
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.previewPictureBox);
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox4.Location = new System.Drawing.Point(331, 3);
+            this.groupBox4.Location = new System.Drawing.Point(373, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(174, 273);
+            this.groupBox4.Size = new System.Drawing.Size(179, 273);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Cover Art";
@@ -413,7 +435,7 @@
             this.previewPictureBox.Location = new System.Drawing.Point(3, 16);
             this.previewPictureBox.Margin = new System.Windows.Forms.Padding(10);
             this.previewPictureBox.Name = "previewPictureBox";
-            this.previewPictureBox.Size = new System.Drawing.Size(168, 254);
+            this.previewPictureBox.Size = new System.Drawing.Size(173, 254);
             this.previewPictureBox.TabIndex = 7;
             this.previewPictureBox.TabStop = false;
             // 
@@ -422,11 +444,12 @@
             this.menuStrip1.BackColor = System.Drawing.Color.LightSteelBlue;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.libraryToolStripMenuItem,
             this.seriesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.ShowItemToolTips = true;
-            this.menuStrip1.Size = new System.Drawing.Size(783, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(883, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -444,87 +467,122 @@
             // 
             this.saveToConfigxmlToolStripMenuItem.Name = "saveToConfigxmlToolStripMenuItem";
             this.saveToConfigxmlToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToConfigxmlToolStripMenuItem.ShowShortcutKeys = false;
-            this.saveToConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.saveToConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.saveToConfigxmlToolStripMenuItem.Text = "&Save Library";
-            this.saveToConfigxmlToolStripMenuItem.Click += new System.EventHandler(this.saveToConfigxmlToolStripMenuItem_Click);
+            this.saveToConfigxmlToolStripMenuItem.Click += new System.EventHandler(this.saveLibraryToolStripMenuItem_Click);
             // 
             // importConfigxmlToolStripMenuItem
             // 
             this.importConfigxmlToolStripMenuItem.Name = "importConfigxmlToolStripMenuItem";
             this.importConfigxmlToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.importConfigxmlToolStripMenuItem.ShowShortcutKeys = false;
-            this.importConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.importConfigxmlToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.importConfigxmlToolStripMenuItem.Text = "&Open Library";
-            this.importConfigxmlToolStripMenuItem.Click += new System.EventHandler(this.importConfigxmlToolStripMenuItem_Click);
+            this.importConfigxmlToolStripMenuItem.Click += new System.EventHandler(this.openLibraryToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // libraryToolStripMenuItem
+            // 
+            this.libraryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addNewSeriesToolStripMenuItem});
+            this.libraryToolStripMenuItem.Enabled = false;
+            this.libraryToolStripMenuItem.Name = "libraryToolStripMenuItem";
+            this.libraryToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+            this.libraryToolStripMenuItem.Text = "&Library";
+            // 
+            // addNewSeriesToolStripMenuItem
+            // 
+            this.addNewSeriesToolStripMenuItem.Name = "addNewSeriesToolStripMenuItem";
+            this.addNewSeriesToolStripMenuItem.ShowShortcutKeys = false;
+            this.addNewSeriesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addNewSeriesToolStripMenuItem.Text = "&Add New Series";
+            this.addNewSeriesToolStripMenuItem.Click += new System.EventHandler(this.addNewSeriesToolStripMenuItem_Click);
             // 
             // seriesToolStripMenuItem
             // 
             this.seriesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.teachNewSeriesToolStripMenuItem,
             this.refreshCurrentSeriesToolStripMenuItem,
+            this.deleteCurrentSeriesToolStripMenuItem,
             this.indexToolStripMenuItem});
+            this.seriesToolStripMenuItem.Enabled = false;
             this.seriesToolStripMenuItem.Name = "seriesToolStripMenuItem";
             this.seriesToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.seriesToolStripMenuItem.Text = "&Series";
             // 
-            // teachNewSeriesToolStripMenuItem
-            // 
-            this.teachNewSeriesToolStripMenuItem.Name = "teachNewSeriesToolStripMenuItem";
-            this.teachNewSeriesToolStripMenuItem.ShowShortcutKeys = false;
-            this.teachNewSeriesToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.teachNewSeriesToolStripMenuItem.Text = "&Learn New Series";
-            this.teachNewSeriesToolStripMenuItem.Click += new System.EventHandler(this.teachNewSeriesToolStripMenuItem_Click);
-            // 
             // refreshCurrentSeriesToolStripMenuItem
             // 
             this.refreshCurrentSeriesToolStripMenuItem.Name = "refreshCurrentSeriesToolStripMenuItem";
-            this.refreshCurrentSeriesToolStripMenuItem.ShowShortcutKeys = false;
-            this.refreshCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.refreshCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.refreshCurrentSeriesToolStripMenuItem.Text = "&Refresh Current Series";
             // 
             // indexToolStripMenuItem
             // 
             this.indexToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fillBeginningToEndToolStripMenuItem,
-            this.fillEndToBeginningToolStripMenuItem});
+            this.fillForwardToolStripMenuItem,
+            this.fillBackwardToolStripMenuItem,
+            this.trimToolStripMenuItem,
+            this.refreshToolStripMenuItem});
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.indexToolStripMenuItem.Text = "&Index";
             // 
-            // fillBeginningToEndToolStripMenuItem
+            // fillForwardToolStripMenuItem
             // 
-            this.fillBeginningToEndToolStripMenuItem.Name = "fillBeginningToEndToolStripMenuItem";
-            this.fillBeginningToEndToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.fillBeginningToEndToolStripMenuItem.Text = "Fill &Forward";
-            this.fillBeginningToEndToolStripMenuItem.ToolTipText = "Fills the index using next links";
+            this.fillForwardToolStripMenuItem.Name = "fillForwardToolStripMenuItem";
+            this.fillForwardToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fillForwardToolStripMenuItem.Text = "Fill &Forward";
+            this.fillForwardToolStripMenuItem.ToolTipText = "Fill index forward from latest known comic";
             // 
-            // fillEndToBeginningToolStripMenuItem
+            // fillBackwardToolStripMenuItem
             // 
-            this.fillEndToBeginningToolStripMenuItem.Name = "fillEndToBeginningToolStripMenuItem";
-            this.fillEndToBeginningToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.fillEndToBeginningToolStripMenuItem.Text = "Fill &Backward";
-            this.fillEndToBeginningToolStripMenuItem.ToolTipText = "Fills the index using previous links";
+            this.fillBackwardToolStripMenuItem.Name = "fillBackwardToolStripMenuItem";
+            this.fillBackwardToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fillBackwardToolStripMenuItem.Text = "Fill &Backward";
+            this.fillBackwardToolStripMenuItem.ToolTipText = "Fill index backward from earliest known comic";
+            // 
+            // deleteCurrentSeriesToolStripMenuItem
+            // 
+            this.deleteCurrentSeriesToolStripMenuItem.Name = "deleteCurrentSeriesToolStripMenuItem";
+            this.deleteCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.deleteCurrentSeriesToolStripMenuItem.Text = "&Delete Current Series";
+            this.deleteCurrentSeriesToolStripMenuItem.Click += new System.EventHandler(this.deleteCurrentSeriesToolStripMenuItem_Click);
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Enabled = false;
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.refreshToolStripMenuItem.Text = "Refresh";
+            this.refreshToolStripMenuItem.ToolTipText = "Only available for natively supported sources with a chapter index";
+            // 
+            // trimToolStripMenuItem
+            // 
+            this.trimToolStripMenuItem.Name = "trimToolStripMenuItem";
+            this.trimToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.trimToolStripMenuItem.Text = "Trim";
+            this.trimToolStripMenuItem.ToolTipText = "Removes page info from downloaded chapters; use if your library is loading slowly" +
+                "";
             // 
             // WebcomicScraperForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(783, 325);
+            this.ClientSize = new System.Drawing.Size(883, 325);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(799, 363);
+            this.MinimumSize = new System.Drawing.Size(899, 363);
             this.Name = "WebcomicScraperForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Webcomic Scraper";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WebcomicScraperForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.WebcomicScraperForm_FormClosed);
             this.Load += new System.EventHandler(this.WebcomicScraperForm_Load);
             this.groupBox1.ResumeLayout(false);
@@ -573,9 +631,8 @@
         private System.Windows.Forms.ToolStripMenuItem saveToConfigxmlToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importConfigxmlToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem seriesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem teachNewSeriesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem refreshCurrentSeriesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem libraryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addNewSeriesToolStripMenuItem;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TextBox txtSaveDir;
         private System.Windows.Forms.Label label6;
@@ -585,14 +642,20 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown nudThreads;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-        private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.PictureBox previewPictureBox;
         private System.Windows.Forms.Label lblURL;
         private System.Windows.Forms.TextBox txtURL;
+        private System.Windows.Forms.ListBox listBoxLibrary;
+        private System.Windows.Forms.CheckBox chkConvert;
+        private System.Windows.Forms.ToolStripMenuItem seriesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem refreshCurrentSeriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem indexToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fillBeginningToEndToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fillEndToBeginningToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fillForwardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fillBackwardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteCurrentSeriesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem trimToolStripMenuItem;
     }
 }
 

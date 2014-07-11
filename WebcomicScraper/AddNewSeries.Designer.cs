@@ -56,27 +56,29 @@
             this.rdbLast = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.txtLastLink = new System.Windows.Forms.TextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnSave = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.rdbThisComic = new System.Windows.Forms.RadioButton();
+            this.txtThisComic = new System.Windows.Forms.TextBox();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 340);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 363);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(784, 22);
             this.statusStrip1.TabIndex = 5;
@@ -104,7 +106,7 @@
             this.btnLoad.Location = new System.Drawing.Point(410, 1);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(84, 22);
-            this.btnLoad.TabIndex = 4;
+            this.btnLoad.TabIndex = 1;
             this.btnLoad.Text = "Load";
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnAnalyze_Click);
@@ -115,7 +117,7 @@
             this.txtURL.Location = new System.Drawing.Point(79, 2);
             this.txtURL.Name = "txtURL";
             this.txtURL.Size = new System.Drawing.Size(325, 20);
-            this.txtURL.TabIndex = 3;
+            this.txtURL.TabIndex = 0;
             // 
             // label1
             // 
@@ -133,7 +135,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(512, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(269, 334);
+            this.groupBox1.Size = new System.Drawing.Size(269, 357);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Series Info";
@@ -143,7 +145,6 @@
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 87F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.rdbPrev, 0, 6);
             this.tableLayoutPanel2.Controls.Add(this.label2, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.txtTitle, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.txtAuthor, 1, 1);
@@ -153,20 +154,23 @@
             this.tableLayoutPanel2.Controls.Add(this.label4, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.label5, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 3);
-            this.tableLayoutPanel2.Controls.Add(this.rdbNext, 0, 5);
-            this.tableLayoutPanel2.Controls.Add(this.txtNextLink, 1, 5);
-            this.tableLayoutPanel2.Controls.Add(this.txtPrevLink, 1, 6);
-            this.tableLayoutPanel2.Controls.Add(this.rdbFirst, 0, 7);
-            this.tableLayoutPanel2.Controls.Add(this.txtFirstLink, 1, 7);
-            this.tableLayoutPanel2.Controls.Add(this.rdbLast, 0, 8);
-            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 9);
-            this.tableLayoutPanel2.Controls.Add(this.txtLastLink, 1, 8);
-            this.tableLayoutPanel2.Controls.Add(this.panel2, 1, 10);
             this.tableLayoutPanel2.Controls.Add(this.label7, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.rdbLast, 0, 9);
+            this.tableLayoutPanel2.Controls.Add(this.txtLastLink, 1, 9);
+            this.tableLayoutPanel2.Controls.Add(this.txtFirstLink, 1, 8);
+            this.tableLayoutPanel2.Controls.Add(this.rdbFirst, 0, 8);
+            this.tableLayoutPanel2.Controls.Add(this.rdbPrev, 0, 7);
+            this.tableLayoutPanel2.Controls.Add(this.txtPrevLink, 1, 7);
+            this.tableLayoutPanel2.Controls.Add(this.txtNextLink, 1, 6);
+            this.tableLayoutPanel2.Controls.Add(this.rdbNext, 0, 6);
+            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 10);
+            this.tableLayoutPanel2.Controls.Add(this.rdbThisComic, 0, 5);
+            this.tableLayoutPanel2.Controls.Add(this.txtThisComic, 1, 5);
+            this.tableLayoutPanel2.Controls.Add(this.panel2, 1, 11);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 11;
+            this.tableLayoutPanel2.RowCount = 12;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
@@ -176,16 +180,17 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(263, 315);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(263, 338);
             this.tableLayoutPanel2.TabIndex = 3;
             // 
             // rdbPrev
             // 
             this.rdbPrev.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.rdbPrev.AutoSize = true;
-            this.rdbPrev.Location = new System.Drawing.Point(3, 204);
+            this.rdbPrev.Location = new System.Drawing.Point(3, 229);
             this.rdbPrev.Name = "rdbPrev";
             this.rdbPrev.Size = new System.Drawing.Size(76, 17);
             this.rdbPrev.TabIndex = 13;
@@ -209,7 +214,7 @@
             this.txtTitle.Location = new System.Drawing.Point(90, 3);
             this.txtTitle.Name = "txtTitle";
             this.txtTitle.Size = new System.Drawing.Size(170, 20);
-            this.txtTitle.TabIndex = 1;
+            this.txtTitle.TabIndex = 2;
             // 
             // txtAuthor
             // 
@@ -217,7 +222,7 @@
             this.txtAuthor.Location = new System.Drawing.Point(90, 23);
             this.txtAuthor.Name = "txtAuthor";
             this.txtAuthor.Size = new System.Drawing.Size(170, 20);
-            this.txtAuthor.TabIndex = 6;
+            this.txtAuthor.TabIndex = 3;
             // 
             // txtArtist
             // 
@@ -225,7 +230,7 @@
             this.txtArtist.Location = new System.Drawing.Point(90, 43);
             this.txtArtist.Name = "txtArtist";
             this.txtArtist.Size = new System.Drawing.Size(170, 20);
-            this.txtArtist.TabIndex = 7;
+            this.txtArtist.TabIndex = 4;
             // 
             // txtSummary
             // 
@@ -235,7 +240,7 @@
             this.txtSummary.Name = "txtSummary";
             this.txtSummary.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSummary.Size = new System.Drawing.Size(170, 84);
-            this.txtSummary.TabIndex = 8;
+            this.txtSummary.TabIndex = 5;
             // 
             // txtCoverURL
             // 
@@ -243,7 +248,7 @@
             this.txtCoverURL.Location = new System.Drawing.Point(90, 153);
             this.txtCoverURL.Name = "txtCoverURL";
             this.txtCoverURL.Size = new System.Drawing.Size(170, 20);
-            this.txtCoverURL.TabIndex = 9;
+            this.txtCoverURL.TabIndex = 6;
             // 
             // label4
             // 
@@ -281,36 +286,34 @@
             // 
             this.rdbNext.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.rdbNext.AutoSize = true;
-            this.rdbNext.Checked = true;
-            this.rdbNext.Location = new System.Drawing.Point(3, 179);
+            this.rdbNext.Location = new System.Drawing.Point(3, 204);
             this.rdbNext.Name = "rdbNext";
             this.rdbNext.Size = new System.Drawing.Size(73, 17);
             this.rdbNext.TabIndex = 11;
-            this.rdbNext.TabStop = true;
             this.rdbNext.Text = "Next Link:";
             this.rdbNext.UseVisualStyleBackColor = true;
             // 
             // txtNextLink
             // 
             this.txtNextLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNextLink.Location = new System.Drawing.Point(90, 178);
+            this.txtNextLink.Location = new System.Drawing.Point(90, 203);
             this.txtNextLink.Name = "txtNextLink";
             this.txtNextLink.Size = new System.Drawing.Size(170, 20);
-            this.txtNextLink.TabIndex = 12;
+            this.txtNextLink.TabIndex = 8;
             // 
             // txtPrevLink
             // 
             this.txtPrevLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPrevLink.Location = new System.Drawing.Point(90, 203);
+            this.txtPrevLink.Location = new System.Drawing.Point(90, 228);
             this.txtPrevLink.Name = "txtPrevLink";
             this.txtPrevLink.Size = new System.Drawing.Size(170, 20);
-            this.txtPrevLink.TabIndex = 14;
+            this.txtPrevLink.TabIndex = 9;
             // 
             // rdbFirst
             // 
             this.rdbFirst.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.rdbFirst.AutoSize = true;
-            this.rdbFirst.Location = new System.Drawing.Point(3, 229);
+            this.rdbFirst.Location = new System.Drawing.Point(3, 254);
             this.rdbFirst.Name = "rdbFirst";
             this.rdbFirst.Size = new System.Drawing.Size(70, 17);
             this.rdbFirst.TabIndex = 15;
@@ -320,16 +323,16 @@
             // txtFirstLink
             // 
             this.txtFirstLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtFirstLink.Location = new System.Drawing.Point(90, 228);
+            this.txtFirstLink.Location = new System.Drawing.Point(90, 253);
             this.txtFirstLink.Name = "txtFirstLink";
             this.txtFirstLink.Size = new System.Drawing.Size(170, 20);
-            this.txtFirstLink.TabIndex = 16;
+            this.txtFirstLink.TabIndex = 10;
             // 
             // rdbLast
             // 
             this.rdbLast.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.rdbLast.AutoSize = true;
-            this.rdbLast.Location = new System.Drawing.Point(3, 254);
+            this.rdbLast.Location = new System.Drawing.Point(3, 279);
             this.rdbLast.Name = "rdbLast";
             this.rdbLast.Size = new System.Drawing.Size(71, 17);
             this.rdbLast.TabIndex = 17;
@@ -340,51 +343,19 @@
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(84, 275);
+            this.label6.Location = new System.Drawing.Point(84, 300);
             this.label6.Name = "label6";
             this.label6.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.label6.Size = new System.Drawing.Size(0, 5);
+            this.label6.Size = new System.Drawing.Size(0, 3);
             this.label6.TabIndex = 5;
             // 
             // txtLastLink
             // 
             this.txtLastLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLastLink.Location = new System.Drawing.Point(90, 253);
+            this.txtLastLink.Location = new System.Drawing.Point(90, 278);
             this.txtLastLink.Name = "txtLastLink";
             this.txtLastLink.Size = new System.Drawing.Size(170, 20);
-            this.txtLastLink.TabIndex = 18;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.btnCancel);
-            this.panel2.Controls.Add(this.btnSave);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(90, 283);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(170, 29);
-            this.panel2.TabIndex = 19;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnCancel.Location = new System.Drawing.Point(92, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnSave
-            // 
-            this.btnSave.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnSave.Location = new System.Drawing.Point(11, 3);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 0;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.txtLastLink.TabIndex = 11;
             // 
             // label7
             // 
@@ -408,7 +379,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 340);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 363);
             this.tableLayoutPanel1.TabIndex = 9;
             // 
             // tableLayoutPanel3
@@ -424,7 +395,7 @@
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(503, 334);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(503, 357);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
             // webBrowser1
@@ -433,19 +404,71 @@
             this.webBrowser1.Location = new System.Drawing.Point(3, 33);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(497, 298);
-            this.webBrowser1.TabIndex = 7;
+            this.webBrowser1.Size = new System.Drawing.Size(497, 333);
+            this.webBrowser1.TabIndex = 99;
+            // 
+            // rdbThisComic
+            // 
+            this.rdbThisComic.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.rdbThisComic.AutoSize = true;
+            this.rdbThisComic.Checked = true;
+            this.rdbThisComic.Location = new System.Drawing.Point(3, 179);
+            this.rdbThisComic.Name = "rdbThisComic";
+            this.rdbThisComic.Size = new System.Drawing.Size(80, 17);
+            this.rdbThisComic.TabIndex = 21;
+            this.rdbThisComic.Text = "This Comic:";
+            this.rdbThisComic.UseVisualStyleBackColor = true;
+            // 
+            // txtThisComic
+            // 
+            this.txtThisComic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtThisComic.Location = new System.Drawing.Point(90, 178);
+            this.txtThisComic.Name = "txtThisComic";
+            this.txtThisComic.Size = new System.Drawing.Size(170, 20);
+            this.txtThisComic.TabIndex = 7;
+            // 
+            // btnSave
+            // 
+            this.btnSave.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnSave.Location = new System.Drawing.Point(11, 3);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 12;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCancel.Location = new System.Drawing.Point(92, 3);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 13;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Controls.Add(this.btnCancel);
+            this.panel2.Controls.Add(this.btnSave);
+            this.panel2.Location = new System.Drawing.Point(90, 306);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(170, 29);
+            this.panel2.TabIndex = 19;
             // 
             // AddNewSeries
             // 
             this.AcceptButton = this.btnLoad;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 362);
+            this.ClientSize = new System.Drawing.Size(784, 385);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(800, 400);
+            this.MinimumSize = new System.Drawing.Size(800, 423);
             this.Name = "AddNewSeries";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add New Series";
@@ -456,9 +479,9 @@
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            this.panel2.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -493,12 +516,14 @@
         private System.Windows.Forms.RadioButton rdbLast;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtLastLink;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.RadioButton rdbThisComic;
+        private System.Windows.Forms.TextBox txtThisComic;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnSave;
     }
 }

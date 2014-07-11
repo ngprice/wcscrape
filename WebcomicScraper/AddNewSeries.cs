@@ -17,18 +17,19 @@ namespace WebcomicScraper
         private bool _bLoaded;
         public Series NewSeries { get; set; }
 
-        private readonly Dictionary<int, Link> _dicRowLink = new Dictionary<int, Link>() //got to be a better way
-        {
-            {5, new Link()}, //Next
-            {6, new Link()}, //Prev
-            {7, new Link()}, //First
-            {8, new Link()}  //Last
-        };
+        private readonly Dictionary<int, Link> _dicRowLink;
  
         public AddNewSeries()
         {
             InitializeComponent();
             InitializeBackgroundWorkers();
+
+            _dicRowLink = new Dictionary<int, Link>();
+            _dicRowLink.Add(tableLayoutPanel2.GetPositionFromControl(txtThisComic).Row, new Link());
+            _dicRowLink.Add(tableLayoutPanel2.GetPositionFromControl(txtNextLink).Row, new Link());
+            _dicRowLink.Add(tableLayoutPanel2.GetPositionFromControl(txtPrevLink).Row, new Link());
+            _dicRowLink.Add(tableLayoutPanel2.GetPositionFromControl(txtFirstLink).Row, new Link());
+            _dicRowLink.Add(tableLayoutPanel2.GetPositionFromControl(txtLastLink).Row, new Link());
         }
 
         private void InitializeBackgroundWorkers()
@@ -85,13 +86,13 @@ namespace WebcomicScraper
                 browser.Document.MouseUp += new HtmlElementEventHandler(htmlDocument_Click);
                 browser.DocumentCompleted -= webBrowser1_DocumentCompleted;
                 browser.Navigating += new WebBrowserNavigatingEventHandler(webBrowser1_Navigating);
-                browser.Stop();
+                //browser.Stop(); //sometimes javascript triggers click events, filling in radio button fields. Stop() sometimes prevents loading of jscript-dependent elements though (e.g. penny arcade). unsure what best fix is
 
                 if (Scraper.KnowsSource(browser.Url.Host))
                 {
                     DisplaySeries(NewSeries);
                     ToggleRadioButtons(false);
-                    Status(String.Format("Natively supported host detected: {0}", browser.Url.Host));
+                    Status(String.Format("Known host detected: {0}", browser.Url.Host));
                 }
 
                 _bLoaded = true;
@@ -114,18 +115,35 @@ namespace WebcomicScraper
             var node = doc.GetElementbyId(uniqueId);
 
             var cellPosition = tableLayoutPanel2.GetPositionFromControl(tableLayoutPanel2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked));
-            if (_dicRowLink.ContainsKey(cellPosition.Row))
-                _dicRowLink[cellPosition.Row].XPath = node.XPath;
+            var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
+            if (control.Enabled)
+            {
+                if (_dicRowLink.ContainsKey(cellPosition.Row))
+                {
+                    _dicRowLink[cellPosition.Row].XPath = node.XPath;
+
+                    if (control == rdbThisComic) //get img/@src instead of a/@href
+                    {
+                        CycleRadioButtonURL(node.GetAttributeValue("src", ""));
+                    }
+                    else
+                    {
+                        CycleRadioButtonURL(node.GetAttributeValue("href",""));
+                    }
+                }
+            }
         }
 
         private void webBrowser1_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             if (_bLoaded)
             {
-                if (e.Url.Scheme == "http" || e.Url.Scheme == "https") //toss javascript, about, ftp, etc
+                if (e.Url.Scheme == "http" || e.Url.Scheme == "https")
                 {
-                    e.Cancel = true;
-                    CycleRadioButtonURL(e.Url.ToString());
+                    if (ModifierKeys != Keys.Control) //allow navigation if CTRL is pressed
+                    {
+                        e.Cancel = true;
+                    }
                 }
             }
         }
@@ -162,11 +180,13 @@ namespace WebcomicScraper
 
         private void ToggleRadioButtons(bool toggle)
         {
+            rdbThisComic.Enabled = toggle;
             rdbNext.Enabled = toggle;
             rdbPrev.Enabled = toggle;
             rdbFirst.Enabled = toggle;
             rdbLast.Enabled = toggle;
 
+            txtThisComic.Enabled = toggle;
             txtNextLink.Enabled = toggle;
             txtPrevLink.Enabled = toggle;
             txtFirstLink.Enabled = toggle;
@@ -190,7 +210,6 @@ namespace WebcomicScraper
             try
             {
                 Cursor.Current = Cursors.WaitCursor;
-                rdbNext.Checked = true;
                 Status("Loading...");
                 analysisBackgroundWorker.RunWorkerAsync();
             }
@@ -212,6 +231,13 @@ namespace WebcomicScraper
             NewSeries.Artist = txtArtist.Text;
             NewSeries.Summary = txtSummary.Text;
             NewSeries.CoverImageURL = txtCoverURL.Text;
+
+            NewSeries.SampleComic = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtThisComic).Row];
+            NewSeries.NextLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtNextLink).Row];
+            NewSeries.PrevLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtPrevLink).Row];
+            NewSeries.FirstLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtFirstLink).Row];
+            NewSeries.LastLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtLastLink).Row];
+
             this.DialogResult = DialogResult.OK;
         }
     }

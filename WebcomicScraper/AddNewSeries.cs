@@ -232,12 +232,21 @@ namespace WebcomicScraper
             NewSeries.Summary = txtSummary.Text;
             NewSeries.CoverImageURL = txtCoverURL.Text;
 
-            NewSeries.SampleComic = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtThisComic).Row];
-            NewSeries.NextLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtNextLink).Row];
-            NewSeries.PrevLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtPrevLink).Row];
-            NewSeries.FirstLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtFirstLink).Row];
-            NewSeries.LastLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtLastLink).Row];
+            if (NewSeries.Source == null)
+            {
+                NewSeries.SampleComic = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtThisComic).Row];
+                NewSeries.NextLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtNextLink).Row];
+                NewSeries.PrevLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtPrevLink).Row];
+                NewSeries.FirstLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtFirstLink).Row];
+                NewSeries.LastLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtLastLink).Row];
 
+                var page = new Page();//add sample page to index
+                page.Num = 1;
+                page.ImageURL = NewSeries.SampleComic.SampleURL;
+
+                NewSeries.Index.Pages = new List<Page>();
+                NewSeries.Index.Pages.Add(page);
+            }
             this.DialogResult = DialogResult.OK;
         }
     }

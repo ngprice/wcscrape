@@ -20,6 +20,8 @@ namespace WebcomicScraper
     * TODO LIST:
     * --Index fill for next/prev style comics
     * --Option to trim page info from chapters that have been downloaded to reduce size of wclib.xml
+    *   L--> store series XML in series folder
+    * --Edit current series info (automatically load sample URL)
     * 
     * PIE IN THE SKY:
     * --RSS feeds for comic updates
@@ -51,7 +53,7 @@ namespace WebcomicScraper
         private static bool ParseSeries(Series series)
         {
             var hostUri = new Uri(series.SeedURL);
-            if (_dicNativeSourceHosts.ContainsKey(hostUri.Host))
+            if (KnowsSource(hostUri.Host))
             {
                 var source = _dicNativeSourceHosts[hostUri.Host];
                 series.Source = source;
@@ -72,7 +74,7 @@ namespace WebcomicScraper
             if (series.Source != null)
             {
                 series.Index.Chapters = series.Source.FindChapters(series.Document);
-                return series.Index.Chapters.Count() > 0; //return false if we didn't find any chapters
+                return series.Index.Chapters != null;
             }
             else throw new ApplicationException("Series source is null.");
         }

@@ -69,12 +69,13 @@
             this.addNewSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.seriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fillForwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fillBackwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trimToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -436,6 +437,7 @@
             this.previewPictureBox.Margin = new System.Windows.Forms.Padding(10);
             this.previewPictureBox.Name = "previewPictureBox";
             this.previewPictureBox.Size = new System.Drawing.Size(173, 254);
+            this.previewPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.previewPictureBox.TabIndex = 7;
             this.previewPictureBox.TabStop = false;
             // 
@@ -499,7 +501,7 @@
             // 
             this.addNewSeriesToolStripMenuItem.Name = "addNewSeriesToolStripMenuItem";
             this.addNewSeriesToolStripMenuItem.ShowShortcutKeys = false;
-            this.addNewSeriesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addNewSeriesToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.addNewSeriesToolStripMenuItem.Text = "&Add New Series";
             this.addNewSeriesToolStripMenuItem.Click += new System.EventHandler(this.addNewSeriesToolStripMenuItem_Click);
             // 
@@ -507,6 +509,7 @@
             // 
             this.seriesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshCurrentSeriesToolStripMenuItem,
+            this.editCurrentSeriesToolStripMenuItem,
             this.deleteCurrentSeriesToolStripMenuItem,
             this.indexToolStripMenuItem});
             this.seriesToolStripMenuItem.Enabled = false;
@@ -517,8 +520,21 @@
             // refreshCurrentSeriesToolStripMenuItem
             // 
             this.refreshCurrentSeriesToolStripMenuItem.Name = "refreshCurrentSeriesToolStripMenuItem";
-            this.refreshCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.refreshCurrentSeriesToolStripMenuItem.Text = "&Refresh Current Series";
+            this.refreshCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.refreshCurrentSeriesToolStripMenuItem.Text = "&Refresh";
+            // 
+            // editCurrentSeriesToolStripMenuItem
+            // 
+            this.editCurrentSeriesToolStripMenuItem.Name = "editCurrentSeriesToolStripMenuItem";
+            this.editCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.editCurrentSeriesToolStripMenuItem.Text = "&Edit";
+            // 
+            // deleteCurrentSeriesToolStripMenuItem
+            // 
+            this.deleteCurrentSeriesToolStripMenuItem.Name = "deleteCurrentSeriesToolStripMenuItem";
+            this.deleteCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteCurrentSeriesToolStripMenuItem.Text = "&Delete";
+            this.deleteCurrentSeriesToolStripMenuItem.Click += new System.EventHandler(this.deleteCurrentSeriesToolStripMenuItem_Click);
             // 
             // indexToolStripMenuItem
             // 
@@ -528,7 +544,7 @@
             this.trimToolStripMenuItem,
             this.refreshToolStripMenuItem});
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.indexToolStripMenuItem.Text = "&Index";
             // 
             // fillForwardToolStripMenuItem
@@ -537,6 +553,7 @@
             this.fillForwardToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.fillForwardToolStripMenuItem.Text = "Fill &Forward";
             this.fillForwardToolStripMenuItem.ToolTipText = "Fill index forward from latest known comic";
+            this.fillForwardToolStripMenuItem.Click += new System.EventHandler(this.fillForwardToolStripMenuItem_Click);
             // 
             // fillBackwardToolStripMenuItem
             // 
@@ -545,12 +562,13 @@
             this.fillBackwardToolStripMenuItem.Text = "Fill &Backward";
             this.fillBackwardToolStripMenuItem.ToolTipText = "Fill index backward from earliest known comic";
             // 
-            // deleteCurrentSeriesToolStripMenuItem
+            // trimToolStripMenuItem
             // 
-            this.deleteCurrentSeriesToolStripMenuItem.Name = "deleteCurrentSeriesToolStripMenuItem";
-            this.deleteCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.deleteCurrentSeriesToolStripMenuItem.Text = "&Delete Current Series";
-            this.deleteCurrentSeriesToolStripMenuItem.Click += new System.EventHandler(this.deleteCurrentSeriesToolStripMenuItem_Click);
+            this.trimToolStripMenuItem.Name = "trimToolStripMenuItem";
+            this.trimToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.trimToolStripMenuItem.Text = "Trim";
+            this.trimToolStripMenuItem.ToolTipText = "Removes page info from downloaded chapters; use if your library is loading slowly" +
+                "";
             // 
             // refreshToolStripMenuItem
             // 
@@ -559,14 +577,6 @@
             this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.ToolTipText = "Only available for natively supported sources with a chapter index";
-            // 
-            // trimToolStripMenuItem
-            // 
-            this.trimToolStripMenuItem.Name = "trimToolStripMenuItem";
-            this.trimToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.trimToolStripMenuItem.Text = "Trim";
-            this.trimToolStripMenuItem.ToolTipText = "Removes page info from downloaded chapters; use if your library is loading slowly" +
-                "";
             // 
             // WebcomicScraperForm
             // 
@@ -656,6 +666,7 @@
         private System.Windows.Forms.ToolStripMenuItem deleteCurrentSeriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem trimToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editCurrentSeriesToolStripMenuItem;
     }
 }
 

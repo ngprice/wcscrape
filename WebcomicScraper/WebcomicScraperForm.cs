@@ -187,13 +187,12 @@ namespace WebcomicScraper
                 if (!String.IsNullOrEmpty(series.CoverImageURL))
                 {
                     previewPictureBox.WaitOnLoad = false;
-                    previewPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                     previewPictureBox.LoadAsync(series.CoverImageURL);
                 }
 
-                if (series.Index.Chapters.Count() > 0)
+                var source = new BindingSource();
+                if (series.Index.Chapters != null)
                 {
-                    var source = new BindingSource();
                     source.DataSource = series.Index.Chapters;
                     dgvIndex.DataSource = source;
                     dgvIndex.Columns[4].Visible = false;
@@ -205,6 +204,19 @@ namespace WebcomicScraper
                             row.DefaultCellStyle.BackColor = Color.LightGreen;
                     }
                     dgvIndex.Refresh();
+                }
+                else if (series.Index.Pages != null)
+                {
+                    source.DataSource = series.Index.Pages;
+                    dgvIndex.DataSource = source;
+
+                    foreach (DataGridViewRow row in dgvIndex.Rows)
+                    {
+                        row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
+                        var page = (Page)row.DataBoundItem;
+                        if (page.Downloaded)
+                            row.DefaultCellStyle.BackColor = Color.LightGreen;
+                    }
                 }
                 else
                 {
@@ -349,6 +361,11 @@ namespace WebcomicScraper
                 default:
                     break;
             }
+        }
+
+        private void fillForwardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

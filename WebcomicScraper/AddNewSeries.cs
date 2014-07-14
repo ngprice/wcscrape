@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using WebcomicScraper.Comic;
+using WebcomicScraper.Sources;
 using HtmlAgilityPack;
 
 namespace WebcomicScraper
@@ -103,32 +104,26 @@ namespace WebcomicScraper
         //http://stackoverflow.com/questions/20736331/get-xpath-from-clicked-htmlelement-in-webbrowsercontrol //isn't stackoverflow great
         private void htmlDocument_Click(object sender, HtmlElementEventArgs e)
         {
-            var browserDoc = (System.Windows.Forms.HtmlDocument)sender;
-            var element = browserDoc.GetElementFromPoint(e.ClientMousePosition);
-
-            var uniqueId = Guid.NewGuid().ToString();
-            element.Id = uniqueId;
-
-            var doc = new HtmlAgilityPack.HtmlDocument();
-            doc.LoadHtml(element.Document.GetElementsByTagName("html")[0].OuterHtml);
-
-            var node = doc.GetElementbyId(uniqueId);
-
-            var cellPosition = tableLayoutPanel2.GetPositionFromControl(tableLayoutPanel2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked));
-            var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
-            if (control.Enabled)
+            if (_bLoaded && (ModifierKeys != Keys.Control))
             {
-                if (_dicRowLink.ContainsKey(cellPosition.Row))
-                {
-                    _dicRowLink[cellPosition.Row].XPath = node.XPath;
+                var browserDoc = (System.Windows.Forms.HtmlDocument)sender;
+                var element = browserDoc.GetElementFromPoint(e.ClientMousePosition);
 
-                    if (control == rdbThisComic) //get img/@src instead of a/@href
+                var uniqueId = Guid.NewGuid().ToString();
+                element.Id = uniqueId;
+
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(element.Document.GetElementsByTagName("html")[0].OuterHtml);
+
+                var node = doc.GetElementbyId(uniqueId);
+
+                var cellPosition = ActiveRadioPosition();
+                var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
+                if (control.Enabled)
+                {
+                    if (_dicRowLink.ContainsKey(cellPosition.Row))
                     {
-                        CycleRadioButtonURL(node.GetAttributeValue("src", ""));
-                    }
-                    else
-                    {
-                        CycleRadioButtonURL(node.GetAttributeValue("href",""));
+                        _dicRowLink[cellPosition.Row].XPath = node.XPath;
                     }
                 }
             }
@@ -143,30 +138,54 @@ namespace WebcomicScraper
                     if (ModifierKeys != Keys.Control) //allow navigation if CTRL is pressed
                     {
                         e.Cancel = true;
+
+                        var cellPosition = ActiveRadioPosition();
+                        var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
+                        if (control.Enabled)
+                        {
+                            if (_dicRowLink.ContainsKey(cellPosition.Row))
+                            {
+                                if (control == rdbThisComic)
+                                {
+                                    _dicRowLink[cellPosition.Row].SampleURL = webBrowser1.Url.ToString();
+                                    CycleRadioButtons(webBrowser1.Url.ToString());
+                                }
+                                else
+                                {
+                                    _dicRowLink[cellPosition.Row].SampleURL = e.Url.ToString();
+                                    CycleRadioButtons(e.Url.ToString());
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
 
-        private void CycleRadioButtonURL(string url)
+        private void CycleRadioButtons(string url)
         {
-            var cellPosition = tableLayoutPanel2.GetPositionFromControl(tableLayoutPanel2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked));
-            cellPosition.Column++;
-
-            var txtBox = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
-            if (txtBox.Enabled)
+            if (!String.IsNullOrEmpty(url))
             {
-                txtBox.Text = url;
+                var cellPosition = ActiveRadioPosition();
+                cellPosition.Column++;
 
-                if (_dicRowLink.ContainsKey(cellPosition.Row))
-                    _dicRowLink[cellPosition.Row].SampleURL = url;
+                var txtBox = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
+                if (txtBox.Enabled)
+                {
+                    txtBox.Text = url;
 
-                cellPosition.Column--; //check the next radiobutton
-                cellPosition.Row++;
-                var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
-                if (control is RadioButton)
-                    ((RadioButton)control).Checked = true;
+                    cellPosition.Column--; //check the next radiobutton
+                    cellPosition.Row++;
+                    var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
+                    if (control is RadioButton)
+                        ((RadioButton)control).Checked = true;
+                }
             }
+        }
+
+        private TableLayoutPanelCellPosition ActiveRadioPosition()
+        {
+            return tableLayoutPanel2.GetPositionFromControl(tableLayoutPanel2.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked));
         }
 
         private void DisplaySeries(Series series)
@@ -232,7 +251,7 @@ namespace WebcomicScraper
             NewSeries.Summary = txtSummary.Text;
             NewSeries.CoverImageURL = txtCoverURL.Text;
 
-            if (NewSeries.Source == null)
+            if (NewSeries.Source is SequentialSource)
             {
                 NewSeries.SampleComic = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtThisComic).Row];
                 NewSeries.NextLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtNextLink).Row];
@@ -240,14 +259,20 @@ namespace WebcomicScraper
                 NewSeries.FirstLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtFirstLink).Row];
                 NewSeries.LastLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtLastLink).Row];
 
-                var page = new Page();//add sample page to index
-                page.Num = 1;
-                page.ImageURL = NewSeries.SampleComic.SampleURL;
+                var page = Scraper.FindPage(NewSeries.Source.GetPage, NewSeries.SampleComic, NewSeries.SampleComic.SampleURL); //add sample comic to index
 
                 NewSeries.Index.Pages = new List<Page>();
                 NewSeries.Index.Pages.Add(page);
             }
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void txtSummary_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.A)
+            {
+                ((TextBox)sender).SelectAll();
+            } 
         }
     }
 }

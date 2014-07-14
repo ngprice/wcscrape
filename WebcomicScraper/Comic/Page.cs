@@ -9,6 +9,7 @@ namespace WebcomicScraper.Comic
     public class Page
     {
         public int Num { get; set; }
+        public string Title { get; set; }
         public string ImageURL { get; set; }
         public bool Downloaded { get; set; }
 

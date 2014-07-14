@@ -56,9 +56,16 @@ namespace WebcomicScraper
 
             nudThreads.Value = Math.Min(Environment.ProcessorCount, 64);
 
-            if (!String.IsNullOrEmpty(Properties.Settings.Default.LibraryPath))
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.LibraryPath) && File.Exists(Properties.Settings.Default.LibraryPath))
             {
-                LoadedLibrary = Scraper.DeserializeLibrary(Properties.Settings.Default.LibraryPath);
+                try
+                {
+                    LoadedLibrary = Scraper.DeserializeLibrary(Properties.Settings.Default.LibraryPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format("Error loading library file: {0}", ex.Message));
+                }
             }
             else
                 LoadedLibrary = new Library();
@@ -83,9 +90,7 @@ namespace WebcomicScraper
                     Cursor.Current = Cursors.WaitCursor;
                     Status("Download started.");
                     _bDownloading = true;
-
                     btnDownload.Text = "Cancel";
-
                     downloadBackgroundWorker.RunWorkerAsync(rows);
                 }
                 else Status("Must select at least 1 row.");
@@ -191,7 +196,7 @@ namespace WebcomicScraper
                 }
 
                 var source = new BindingSource();
-                if (series.Index.Chapters != null)
+                if (series.Index.Chapters != null && series.Index.Chapters.Any())
                 {
                     source.DataSource = series.Index.Chapters;
                     dgvIndex.DataSource = source;
@@ -205,7 +210,7 @@ namespace WebcomicScraper
                     }
                     dgvIndex.Refresh();
                 }
-                else if (series.Index.Pages != null)
+                else if (series.Index.Pages != null && series.Index.Pages.Any())
                 {
                     source.DataSource = series.Index.Pages;
                     dgvIndex.DataSource = source;

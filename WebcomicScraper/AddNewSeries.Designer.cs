@@ -38,7 +38,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.rdbPrev = new System.Windows.Forms.RadioButton();
             this.label2 = new System.Windows.Forms.Label();
             this.txtTitle = new System.Windows.Forms.TextBox();
             this.txtAuthor = new System.Windows.Forms.TextBox();
@@ -48,30 +47,31 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.rdbNext = new System.Windows.Forms.RadioButton();
-            this.txtNextLink = new System.Windows.Forms.TextBox();
-            this.txtPrevLink = new System.Windows.Forms.TextBox();
-            this.rdbFirst = new System.Windows.Forms.RadioButton();
-            this.txtFirstLink = new System.Windows.Forms.TextBox();
-            this.rdbLast = new System.Windows.Forms.RadioButton();
-            this.label6 = new System.Windows.Forms.Label();
-            this.txtLastLink = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.rdbLast = new System.Windows.Forms.RadioButton();
+            this.txtLastLink = new System.Windows.Forms.TextBox();
+            this.txtFirstLink = new System.Windows.Forms.TextBox();
+            this.rdbFirst = new System.Windows.Forms.RadioButton();
+            this.rdbPrev = new System.Windows.Forms.RadioButton();
+            this.txtPrevLink = new System.Windows.Forms.TextBox();
+            this.txtNextLink = new System.Windows.Forms.TextBox();
+            this.rdbNext = new System.Windows.Forms.RadioButton();
+            this.label6 = new System.Windows.Forms.Label();
+            this.rdbThisComic = new System.Windows.Forms.RadioButton();
+            this.txtThisComic = new System.Windows.Forms.TextBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.rdbThisComic = new System.Windows.Forms.RadioButton();
-            this.txtThisComic = new System.Windows.Forms.TextBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.panel2 = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -186,17 +186,6 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(263, 338);
             this.tableLayoutPanel2.TabIndex = 3;
             // 
-            // rdbPrev
-            // 
-            this.rdbPrev.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.rdbPrev.AutoSize = true;
-            this.rdbPrev.Location = new System.Drawing.Point(3, 229);
-            this.rdbPrev.Name = "rdbPrev";
-            this.rdbPrev.Size = new System.Drawing.Size(76, 17);
-            this.rdbPrev.TabIndex = 13;
-            this.rdbPrev.Text = "Prev. Link:";
-            this.rdbPrev.UseVisualStyleBackColor = true;
-            // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -241,6 +230,7 @@
             this.txtSummary.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSummary.Size = new System.Drawing.Size(170, 84);
             this.txtSummary.TabIndex = 5;
+            this.txtSummary.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSummary_KeyUp);
             // 
             // txtCoverURL
             // 
@@ -282,51 +272,15 @@
             this.label3.TabIndex = 2;
             this.label3.Text = "Summary:";
             // 
-            // rdbNext
+            // label7
             // 
-            this.rdbNext.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.rdbNext.AutoSize = true;
-            this.rdbNext.Location = new System.Drawing.Point(3, 204);
-            this.rdbNext.Name = "rdbNext";
-            this.rdbNext.Size = new System.Drawing.Size(73, 17);
-            this.rdbNext.TabIndex = 11;
-            this.rdbNext.Text = "Next Link:";
-            this.rdbNext.UseVisualStyleBackColor = true;
-            // 
-            // txtNextLink
-            // 
-            this.txtNextLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNextLink.Location = new System.Drawing.Point(90, 203);
-            this.txtNextLink.Name = "txtNextLink";
-            this.txtNextLink.Size = new System.Drawing.Size(170, 20);
-            this.txtNextLink.TabIndex = 8;
-            // 
-            // txtPrevLink
-            // 
-            this.txtPrevLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPrevLink.Location = new System.Drawing.Point(90, 228);
-            this.txtPrevLink.Name = "txtPrevLink";
-            this.txtPrevLink.Size = new System.Drawing.Size(170, 20);
-            this.txtPrevLink.TabIndex = 9;
-            // 
-            // rdbFirst
-            // 
-            this.rdbFirst.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.rdbFirst.AutoSize = true;
-            this.rdbFirst.Location = new System.Drawing.Point(3, 254);
-            this.rdbFirst.Name = "rdbFirst";
-            this.rdbFirst.Size = new System.Drawing.Size(70, 17);
-            this.rdbFirst.TabIndex = 15;
-            this.rdbFirst.Text = "First Link:";
-            this.rdbFirst.UseVisualStyleBackColor = true;
-            // 
-            // txtFirstLink
-            // 
-            this.txtFirstLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtFirstLink.Location = new System.Drawing.Point(90, 253);
-            this.txtFirstLink.Name = "txtFirstLink";
-            this.txtFirstLink.Size = new System.Drawing.Size(170, 20);
-            this.txtFirstLink.TabIndex = 10;
+            this.label7.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(21, 156);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(63, 13);
+            this.label7.TabIndex = 20;
+            this.label7.Text = "Cover URL:";
             // 
             // rdbLast
             // 
@@ -339,6 +293,75 @@
             this.rdbLast.Text = "Last Link:";
             this.rdbLast.UseVisualStyleBackColor = true;
             // 
+            // txtLastLink
+            // 
+            this.txtLastLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLastLink.Location = new System.Drawing.Point(90, 278);
+            this.txtLastLink.Name = "txtLastLink";
+            this.txtLastLink.ReadOnly = true;
+            this.txtLastLink.Size = new System.Drawing.Size(170, 20);
+            this.txtLastLink.TabIndex = 11;
+            // 
+            // txtFirstLink
+            // 
+            this.txtFirstLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFirstLink.Location = new System.Drawing.Point(90, 253);
+            this.txtFirstLink.Name = "txtFirstLink";
+            this.txtFirstLink.ReadOnly = true;
+            this.txtFirstLink.Size = new System.Drawing.Size(170, 20);
+            this.txtFirstLink.TabIndex = 10;
+            // 
+            // rdbFirst
+            // 
+            this.rdbFirst.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.rdbFirst.AutoSize = true;
+            this.rdbFirst.Location = new System.Drawing.Point(3, 254);
+            this.rdbFirst.Name = "rdbFirst";
+            this.rdbFirst.Size = new System.Drawing.Size(70, 17);
+            this.rdbFirst.TabIndex = 15;
+            this.rdbFirst.Text = "First Link:";
+            this.rdbFirst.UseVisualStyleBackColor = true;
+            // 
+            // rdbPrev
+            // 
+            this.rdbPrev.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.rdbPrev.AutoSize = true;
+            this.rdbPrev.Location = new System.Drawing.Point(3, 229);
+            this.rdbPrev.Name = "rdbPrev";
+            this.rdbPrev.Size = new System.Drawing.Size(76, 17);
+            this.rdbPrev.TabIndex = 13;
+            this.rdbPrev.Text = "Prev. Link:";
+            this.rdbPrev.UseVisualStyleBackColor = true;
+            // 
+            // txtPrevLink
+            // 
+            this.txtPrevLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPrevLink.Location = new System.Drawing.Point(90, 228);
+            this.txtPrevLink.Name = "txtPrevLink";
+            this.txtPrevLink.ReadOnly = true;
+            this.txtPrevLink.Size = new System.Drawing.Size(170, 20);
+            this.txtPrevLink.TabIndex = 9;
+            // 
+            // txtNextLink
+            // 
+            this.txtNextLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNextLink.Location = new System.Drawing.Point(90, 203);
+            this.txtNextLink.Name = "txtNextLink";
+            this.txtNextLink.ReadOnly = true;
+            this.txtNextLink.Size = new System.Drawing.Size(170, 20);
+            this.txtNextLink.TabIndex = 8;
+            // 
+            // rdbNext
+            // 
+            this.rdbNext.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.rdbNext.AutoSize = true;
+            this.rdbNext.Location = new System.Drawing.Point(3, 204);
+            this.rdbNext.Name = "rdbNext";
+            this.rdbNext.Size = new System.Drawing.Size(73, 17);
+            this.rdbNext.TabIndex = 11;
+            this.rdbNext.Text = "Next Link:";
+            this.rdbNext.UseVisualStyleBackColor = true;
+            // 
             // label6
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -349,23 +372,59 @@
             this.label6.Size = new System.Drawing.Size(0, 3);
             this.label6.TabIndex = 5;
             // 
-            // txtLastLink
+            // rdbThisComic
             // 
-            this.txtLastLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLastLink.Location = new System.Drawing.Point(90, 278);
-            this.txtLastLink.Name = "txtLastLink";
-            this.txtLastLink.Size = new System.Drawing.Size(170, 20);
-            this.txtLastLink.TabIndex = 11;
+            this.rdbThisComic.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.rdbThisComic.AutoSize = true;
+            this.rdbThisComic.Checked = true;
+            this.rdbThisComic.Location = new System.Drawing.Point(3, 179);
+            this.rdbThisComic.Name = "rdbThisComic";
+            this.rdbThisComic.Size = new System.Drawing.Size(80, 17);
+            this.rdbThisComic.TabIndex = 21;
+            this.rdbThisComic.TabStop = true;
+            this.rdbThisComic.Text = "This Comic:";
+            this.rdbThisComic.UseVisualStyleBackColor = true;
             // 
-            // label7
+            // txtThisComic
             // 
-            this.label7.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(21, 156);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(63, 13);
-            this.label7.TabIndex = 20;
-            this.label7.Text = "Cover URL:";
+            this.txtThisComic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtThisComic.Location = new System.Drawing.Point(90, 178);
+            this.txtThisComic.Name = "txtThisComic";
+            this.txtThisComic.ReadOnly = true;
+            this.txtThisComic.Size = new System.Drawing.Size(170, 20);
+            this.txtThisComic.TabIndex = 7;
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Controls.Add(this.btnCancel);
+            this.panel2.Controls.Add(this.btnSave);
+            this.panel2.Location = new System.Drawing.Point(90, 306);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(170, 29);
+            this.panel2.TabIndex = 19;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCancel.Location = new System.Drawing.Point(92, 3);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 13;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // btnSave
+            // 
+            this.btnSave.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnSave.Location = new System.Drawing.Point(11, 3);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 12;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -407,58 +466,6 @@
             this.webBrowser1.Size = new System.Drawing.Size(497, 333);
             this.webBrowser1.TabIndex = 99;
             // 
-            // rdbThisComic
-            // 
-            this.rdbThisComic.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.rdbThisComic.AutoSize = true;
-            this.rdbThisComic.Checked = true;
-            this.rdbThisComic.Location = new System.Drawing.Point(3, 179);
-            this.rdbThisComic.Name = "rdbThisComic";
-            this.rdbThisComic.Size = new System.Drawing.Size(80, 17);
-            this.rdbThisComic.TabIndex = 21;
-            this.rdbThisComic.Text = "This Comic:";
-            this.rdbThisComic.UseVisualStyleBackColor = true;
-            // 
-            // txtThisComic
-            // 
-            this.txtThisComic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtThisComic.Location = new System.Drawing.Point(90, 178);
-            this.txtThisComic.Name = "txtThisComic";
-            this.txtThisComic.Size = new System.Drawing.Size(170, 20);
-            this.txtThisComic.TabIndex = 7;
-            // 
-            // btnSave
-            // 
-            this.btnSave.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnSave.Location = new System.Drawing.Point(11, 3);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 12;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnCancel.Location = new System.Drawing.Point(92, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 13;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.btnCancel);
-            this.panel2.Controls.Add(this.btnSave);
-            this.panel2.Location = new System.Drawing.Point(90, 306);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(170, 29);
-            this.panel2.TabIndex = 19;
-            // 
             // AddNewSeries
             // 
             this.AcceptButton = this.btnLoad;
@@ -479,9 +486,9 @@
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            this.panel2.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

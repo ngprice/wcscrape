@@ -142,5 +142,10 @@ namespace WebcomicScraper.Sources
 
             return result.OrderBy(p => p.Num).ToList();
         }
+
+        public override Page GetPage(Link imageLink, string Url)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

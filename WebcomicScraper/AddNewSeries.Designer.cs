@@ -463,7 +463,7 @@
             this.webBrowser1.Location = new System.Drawing.Point(3, 33);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(497, 333);
+            this.webBrowser1.Size = new System.Drawing.Size(497, 321);
             this.webBrowser1.TabIndex = 99;
             // 
             // AddNewSeries

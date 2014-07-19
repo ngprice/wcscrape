@@ -16,6 +16,7 @@ namespace WebcomicScraper
     public partial class AddNewSeries : Form
     {
         private bool _bLoaded;
+        private HtmlAgilityPack.HtmlDocument _doc;
         public Series NewSeries { get; set; }
 
         private readonly Dictionary<int, Link> _dicRowLink;
@@ -76,12 +77,12 @@ namespace WebcomicScraper
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             WebBrowser browser = (WebBrowser)sender;
-            var agilityDoc = new HtmlAgilityPack.HtmlDocument();
+            _doc = new HtmlAgilityPack.HtmlDocument();
             if (browser.Document != null)
             {
-                agilityDoc.LoadHtml(browser.Document.Body.InnerHtml);
+                _doc.LoadHtml(browser.Document.Body.Parent.OuterHtml);
 
-                NewSeries = Scraper.LoadSeries(browser.Url.ToString(), agilityDoc);
+                NewSeries = Scraper.LoadSeries(browser.Url.ToString(), _doc);
                 Scraper.AnalyzeSeries(NewSeries);
 
                 browser.Document.MouseUp += new HtmlElementEventHandler(htmlDocument_Click);
@@ -106,27 +107,37 @@ namespace WebcomicScraper
         {
             if (_bLoaded && (ModifierKeys != Keys.Control))
             {
-                var browserDoc = (System.Windows.Forms.HtmlDocument)sender;
-                var element = browserDoc.GetElementFromPoint(e.ClientMousePosition);
-
-                var uniqueId = Guid.NewGuid().ToString();
-                element.Id = uniqueId;
-
-                var doc = new HtmlAgilityPack.HtmlDocument();
-                doc.LoadHtml(element.Document.GetElementsByTagName("html")[0].OuterHtml);
-
-                var node = doc.GetElementbyId(uniqueId);
-
                 var cellPosition = ActiveRadioPosition();
                 var control = tableLayoutPanel2.GetControlFromPosition(cellPosition.Column, cellPosition.Row);
-                if (control.Enabled)
+                if (control.Enabled && _dicRowLink.ContainsKey(cellPosition.Row))
                 {
-                    if (_dicRowLink.ContainsKey(cellPosition.Row))
-                    {
-                        _dicRowLink[cellPosition.Row].XPath = node.XPath;
-                    }
+                    var browserDoc = (System.Windows.Forms.HtmlDocument)sender;
+                    var element = browserDoc.GetElementFromPoint(e.ClientMousePosition);
+
+                    var uniqueId = Guid.NewGuid().ToString();
+                    element.Id = uniqueId;
+
+                    var doc = new HtmlAgilityPack.HtmlDocument();
+                    doc.LoadHtml(browserDoc.Body.Parent.OuterHtml);
+
+                    var node = doc.GetElementbyId(uniqueId);
+
+                    if (control != rdbThisComic && (node.Name.ToLower() != "a" || String.IsNullOrEmpty(node.GetAttributeValue("href", "")))) //images in anchor tags, want parents if getting links
+                        node = ParentAnchorNode(node);
+
+                    _dicRowLink[cellPosition.Row].XPath = node.XPath;
                 }
             }
+        }
+
+        private HtmlNode ParentAnchorNode(HtmlNode node)
+        {
+            if (node.ParentNode == null)
+                return null;
+            else if (node.ParentNode.Name.ToLower() == "a" || !String.IsNullOrEmpty(node.GetAttributeValue("href", "")))
+                return node.ParentNode;
+            else
+                return ParentAnchorNode(node.ParentNode); //recurse upwards
         }
 
         private void webBrowser1_Navigating(object sender, WebBrowserNavigatingEventArgs e)
@@ -259,7 +270,9 @@ namespace WebcomicScraper
                 NewSeries.FirstLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtFirstLink).Row];
                 NewSeries.LastLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtLastLink).Row];
 
-                var page = Scraper.FindPage(NewSeries.Source.GetPage, NewSeries.SampleComic, NewSeries.SampleComic.SampleURL); //add sample comic to index
+                var page = NewSeries.Source.GetPage(NewSeries.SampleComic, _doc); //add sample comic to index
+                page.PageURL = NewSeries.SampleComic.SampleURL;
+                page.Num = 1;
 
                 NewSeries.Index.Pages = new List<Page>();
                 NewSeries.Index.Pages.Add(page);

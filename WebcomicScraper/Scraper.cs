@@ -19,11 +19,14 @@ namespace WebcomicScraper
     /*
     * TODO LIST:
     * --Index fill for next/prev style comics
+    * --Mark partially downloaded comics yellow in list
     * --Option to trim page info from chapters that have been downloaded to reduce size of wclib.xml
     *   L--> store series XML in series folder
     * --Timers on status updates (e.g. Download successful! (00:01:30 s))
     * --Edit current series info (automatically load sample URL)
     * --Cache loaded cover images
+    * --Support relative href's (index filler must konw about this)
+    *   L--> e.g. depressedalien.com: <a href="212"> redirects to depressedalien.com/212
     * 
     * PIE IN THE SKY:
     * --RSS feeds for comic updates
@@ -33,11 +36,6 @@ namespace WebcomicScraper
     * --Multi-comic layout option when creating .CBR's... would need to create new image files
     * --Flash support (e.g. platinum grit)
     * */
-
-    public delegate string FindStringDelegate(HtmlDocument doc);
-    public delegate List<Chapter> FindChapterListDelegate(HtmlDocument doc);
-    public delegate List<Page> FindPageListDelegate(HtmlDocument doc);
-    public delegate Page FindPageDelegate(Link link, string url);
 
     public static class Scraper
     {
@@ -58,26 +56,6 @@ namespace WebcomicScraper
             return (ParseSeries(series));
         }
 
-        public static string FindString(FindStringDelegate fsd, HtmlDocument doc)
-        {
-            return fsd(doc);
-        }
-
-        public static List<Chapter> FindChapterList(FindChapterListDelegate fcld, HtmlDocument doc)
-        {
-            return fcld(doc);
-        }
-
-        public static List<Page> FindPageList(FindPageListDelegate fpld, HtmlDocument doc)
-        {
-            return fpld(doc);
-        }
-
-        public static Page FindPage(FindPageDelegate fpd, Link link, string url)
-        {
-            return fpd(link, url);
-        }
-
         private static bool ParseSeries(Series series)
         {
             var hostUri = new Uri(series.SeedURL);
@@ -86,11 +64,11 @@ namespace WebcomicScraper
                 var source = _dicNativeSourceHosts[hostUri.Host];
                 series.Source = source;
 
-                series.Title = FindString(source.FindTitle, series.Document);
-                series.Summary = FindString(source.FindDescription, series.Document);
-                series.Author = FindString(source.FindAuthor, series.Document);
-                series.Artist = FindString(source.FindArtist, series.Document);
-                series.CoverImageURL = FindString(source.FindCover, series.Document);
+                series.Title = source.FindTitle(series.Document);
+                series.Summary = source.FindDescription(series.Document);
+                series.Author = source.FindAuthor(series.Document);
+                series.Artist = source.FindArtist(series.Document);
+                series.CoverImageURL = source.FindCover(series.Document);
 
                 return (!String.IsNullOrEmpty(series.Title) && ParseIndex(series)); //return false if we didn't find at least a title
             }
@@ -105,7 +83,7 @@ namespace WebcomicScraper
         {
             if (!(series.Source is SequentialSource))
             {
-                series.Index.Chapters = FindChapterList(series.Source.FindChapters, series.Document);
+                series.Index.Chapters = series.Source.FindChapters(series.Document);
                 return series.Index.Chapters != null;
             }
             return false; //generic sources don't have a parsable index
@@ -121,7 +99,7 @@ namespace WebcomicScraper
             var doc = new HtmlDocument();
             doc.LoadHtml(GetHTML(chapter.SourceURL));
 
-            chapter.Pages = FindPageList(series.Source.GetPages, doc);
+            chapter.Pages = series.Source.GetPages(doc);
 
             var chapterPath = Path.Combine(seriesPath, CleanPath(String.Join(" ", series.Title, chapter.Num.ToString("0000"), "-", chapter.Description).Trim()));
             if (chapterPath.Length > 260)

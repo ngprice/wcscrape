@@ -118,7 +118,8 @@ namespace WebcomicScraper.Sources
                 {
                     try
                     {
-                        string pageHtml = webClient.DownloadString(node.GetAttributeValue("value", ""));
+                        string pageUrl = node.GetAttributeValue("value", "");
+                        string pageHtml = webClient.DownloadString(pageUrl);
 
                         var pageDoc = new HtmlDocument();
                         pageDoc.LoadHtml(pageHtml);
@@ -128,6 +129,7 @@ namespace WebcomicScraper.Sources
                         {
                             var page = new Page();
                             page.Num = int.Parse(node.NextSibling.InnerText);
+                            page.PageURL = pageUrl;
                             page.ImageURL = imgElement.GetAttributeValue("src", "");
 
                             result.Add(page);
@@ -143,7 +145,12 @@ namespace WebcomicScraper.Sources
             return result.OrderBy(p => p.Num).ToList();
         }
 
-        public override Page GetPage(Link imageLink, string Url)
+        public override void FillIndex(Series series, Page start, Link direction)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Page GetPage(Link imageLink, HtmlDocument doc)
         {
             throw new NotImplementedException();
         }

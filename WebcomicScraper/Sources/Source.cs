@@ -17,6 +17,7 @@ namespace WebcomicScraper.Sources
         abstract public List<Chapter> FindChapters(HtmlDocument doc);
         abstract public List<Page> GetPages(HtmlDocument doc);
 
-        abstract public Page GetPage(Link imageLink, string Url);
+        abstract public Page GetPage(Link imageLink, HtmlDocument doc);
+        abstract public void FillIndex(Series series, Page start, Link direction);
     }
 }

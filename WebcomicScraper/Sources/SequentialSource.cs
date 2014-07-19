@@ -46,22 +46,23 @@ namespace WebcomicScraper.Sources
             throw new NotImplementedException();
         }
 
-        public override Page GetPage(Link imageLink, string Url)
+        public override Page GetPage(Link imageLink, HtmlDocument doc)
         {
-            using (WebClient webClient = new WebClient())
-            {
-                var pageHtml = webClient.DownloadString(Url);
-                var doc = new HtmlDocument();
-                doc.LoadHtml(pageHtml);
+            var img = doc.DocumentNode.SelectSingleNode(imageLink.XPath);
 
-                var img = doc.DocumentNode.SelectSingleNode(imageLink.XPath);
+            if (img == null)
+                throw new ApplicationException(String.Format("Unable to find image from this XPath: {0}", imageLink.XPath));
 
-                var result = new Page();
-                result.ImageURL = img.GetAttributeValue("src", "");
-                result.Title = String.IsNullOrEmpty(img.GetAttributeValue("title", "")) ? img.GetAttributeValue("alt", "") : img.GetAttributeValue("title", "");
+            var result = new Page();
+            result.ImageURL = img.GetAttributeValue("src", "");
+            result.Title = String.IsNullOrEmpty(img.GetAttributeValue("title", "")) ? img.GetAttributeValue("alt", "") : img.GetAttributeValue("title", "");
 
-                return result;
-            }
+            return result;
+        }
+
+        public override void FillIndex(Series series, Page start, Link direction)
+        {
+            throw new NotImplementedException();
         }
     }
 }

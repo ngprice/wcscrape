@@ -370,7 +370,7 @@ namespace WebcomicScraper
 
         private void fillForwardToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            LoadedSeries.Source.FillIndex(LoadedSeries, LoadedSeries.Index.Pages.Last(), LoadedSeries.NextLink);
         }
     }
 }

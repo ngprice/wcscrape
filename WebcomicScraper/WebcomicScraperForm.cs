@@ -200,15 +200,13 @@ namespace WebcomicScraper
                 {
                     source.DataSource = series.Index.Chapters;
                     dgvIndex.DataSource = source;
-                    dgvIndex.Columns[4].Visible = false;
                     foreach (DataGridViewRow row in dgvIndex.Rows)
                     {
-                        row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
                         var chapter = (Chapter)row.DataBoundItem;
+                        row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
                         if (chapter.Downloaded)
                             row.DefaultCellStyle.BackColor = Color.LightGreen;
                     }
-                    dgvIndex.Refresh();
                 }
                 else if (series.Index.Pages != null && series.Index.Pages.Any())
                 {
@@ -217,8 +215,8 @@ namespace WebcomicScraper
 
                     foreach (DataGridViewRow row in dgvIndex.Rows)
                     {
-                        row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
                         var page = (Page)row.DataBoundItem;
+                        row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
                         if (page.Downloaded)
                             row.DefaultCellStyle.BackColor = Color.LightGreen;
                     }
@@ -275,11 +273,11 @@ namespace WebcomicScraper
 
         private void addNewSeriesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var teachNewSeriesForm = new AddNewSeries())
+            using (var addNewSeriesForm = new AddNewSeries())
             {
-                if (teachNewSeriesForm.ShowDialog() == DialogResult.OK) //Save
+                if (addNewSeriesForm.ShowDialog() == DialogResult.OK) //Save
                 {
-                    var newSeries = teachNewSeriesForm.NewSeries;
+                    var newSeries = addNewSeriesForm.NewSeries;
                     LoadedLibrary.AddSeries(newSeries);
                     DisplayLibrary(LoadedLibrary);
                     LoadedSeries = newSeries;
@@ -368,9 +366,18 @@ namespace WebcomicScraper
             }
         }
 
-        private void fillForwardToolStripMenuItem_Click(object sender, EventArgs e)
+        private void fillIndexToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LoadedSeries.Source.FillIndex(LoadedSeries, LoadedSeries.Index.Pages.Last(), LoadedSeries.NextLink);
+            using (var fillIndexForm = new FillIndex(LoadedSeries))
+            {
+                if (fillIndexForm.ShowDialog() == DialogResult.OK) //Save
+                {
+                    DisplayLibrary(LoadedLibrary);
+                    listBoxLibrary.SelectedItem = LoadedSeries;
+                    _bLibraryDirty = true;
+                }
+                this.BringToFront();
+            }
         }
     }
 }

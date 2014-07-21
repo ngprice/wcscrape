@@ -126,6 +126,14 @@ namespace WebcomicScraper
                         node = ParentAnchorNode(node);
 
                     _dicRowLink[cellPosition.Row].XPath = node.XPath;
+
+                    using (System.Net.WebClient wc = new System.Net.WebClient())
+                    {
+                        var pageHtml = wc.DownloadString(webBrowser1.Url);
+                        var newdoc = new HtmlAgilityPack.HtmlDocument();
+                        newdoc.LoadHtml(pageHtml);
+                        var testNode = newdoc.DocumentNode.SelectSingleNode(node.XPath);
+                    }
                 }
             }
         }
@@ -264,14 +272,14 @@ namespace WebcomicScraper
 
             if (NewSeries.Source is SequentialSource)
             {
-                NewSeries.SampleComic = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtThisComic).Row];
+                NewSeries.ComicLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtThisComic).Row];
                 NewSeries.NextLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtNextLink).Row];
                 NewSeries.PrevLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtPrevLink).Row];
                 NewSeries.FirstLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtFirstLink).Row];
                 NewSeries.LastLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtLastLink).Row];
 
-                var page = NewSeries.Source.GetPage(NewSeries.SampleComic, _doc); //add sample comic to index
-                page.PageURL = NewSeries.SampleComic.SampleURL;
+                var page = NewSeries.Source.GetPage(NewSeries.ComicLink, _doc); //add sample comic to index
+                page.PageURL = NewSeries.ComicLink.SampleURL;
                 page.Num = 1;
 
                 NewSeries.Index.Pages = new List<Page>();

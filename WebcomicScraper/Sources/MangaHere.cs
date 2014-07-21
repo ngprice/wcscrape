@@ -145,12 +145,12 @@ namespace WebcomicScraper.Sources
             return result.OrderBy(p => p.Num).ToList();
         }
 
-        public override void FillIndex(Series series, Page start, Link direction)
+        public override Page GetPage(Link imageLink, HtmlDocument doc)
         {
             throw new NotImplementedException();
         }
 
-        public override Page GetPage(Link imageLink, HtmlDocument doc)
+        public override Page GetPageFromLink(Page start, Link direction)
         {
             throw new NotImplementedException();
         }

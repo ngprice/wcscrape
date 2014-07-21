@@ -19,14 +19,17 @@ namespace WebcomicScraper
     /*
     * TODO LIST:
     * --Index fill for next/prev style comics
+    *   L--> handle comics whose last link is static (e.g. penny-arcade.com/comic)
+    *   L--> Support relative href's (index filler must know about this)
+    *       L--> e.g. depressedalien.com: <a href="212"> redirects to depressedalien.com/212
     * --Mark partially downloaded comics yellow in list
+    *   L--> handle in FillIndex form as well
     * --Option to trim page info from chapters that have been downloaded to reduce size of wclib.xml
     *   L--> store series XML in series folder
     * --Timers on status updates (e.g. Download successful! (00:01:30 s))
-    * --Edit current series info (automatically load sample URL)
+    * --Edit current series info
+    *   L--> automatically load sample URL
     * --Cache loaded cover images
-    * --Support relative href's (index filler must konw about this)
-    *   L--> e.g. depressedalien.com: <a href="212"> redirects to depressedalien.com/212
     * 
     * PIE IN THE SKY:
     * --RSS feeds for comic updates
@@ -36,6 +39,8 @@ namespace WebcomicScraper
     * --Multi-comic layout option when creating .CBR's... would need to create new image files
     * --Flash support (e.g. platinum grit)
     * */
+
+    public enum FillDirection { Forward, Backward }
 
     public static class Scraper
     {
@@ -242,6 +247,26 @@ namespace WebcomicScraper
             filestream.Close();
 
             return result;
+        }
+
+        public static Page FillSeriesIndex(Series series, FillDirection direction)
+        {
+            switch (direction)
+            {
+                case (FillDirection.Forward):
+                    var nextPage = series.Source.GetPageFromLink(series.Index.Pages.Last(), series.NextLink);
+                    if (nextPage != null)
+                        series.Index.Pages.Add(nextPage);
+                    return nextPage;
+                case (FillDirection.Backward):
+                    var prevPage = series.Source.GetPageFromLink(series.Index.Pages.First(), series.PrevLink);
+                    if (prevPage != null)
+                        series.Index.Pages.Insert(0, prevPage);
+                    return prevPage;
+                default:
+                    return null;
+            }
+            
         }
     }
 }

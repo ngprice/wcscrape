@@ -9,6 +9,8 @@ namespace WebcomicScraper.Sources
 {
     public abstract class Source
     {
+        protected Series ParentSeries;
+
         abstract public string FindTitle(HtmlDocument doc);
         abstract public string FindDescription(HtmlDocument doc);
         abstract public string FindAuthor(HtmlDocument doc);
@@ -18,6 +20,6 @@ namespace WebcomicScraper.Sources
         abstract public List<Page> GetPages(HtmlDocument doc);
 
         abstract public Page GetPage(Link imageLink, HtmlDocument doc);
-        abstract public void FillIndex(Series series, Page start, Link direction);
+        abstract public Page GetPageFromLink(Page start, Link direction);
     }
 }

@@ -72,8 +72,7 @@
             this.editCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteCurrentSeriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fillForwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fillBackwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fillIndexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trimToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
@@ -262,6 +261,7 @@
             // 
             this.dgvIndex.AllowUserToAddRows = false;
             this.dgvIndex.AllowUserToDeleteRows = false;
+            this.dgvIndex.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
             this.dgvIndex.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvIndex.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvIndex.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
@@ -539,33 +539,24 @@
             // indexToolStripMenuItem
             // 
             this.indexToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fillForwardToolStripMenuItem,
-            this.fillBackwardToolStripMenuItem,
+            this.fillIndexToolStripMenuItem,
             this.trimToolStripMenuItem,
             this.refreshToolStripMenuItem});
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
             this.indexToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.indexToolStripMenuItem.Text = "&Index";
             // 
-            // fillForwardToolStripMenuItem
+            // fillIndexToolStripMenuItem
             // 
-            this.fillForwardToolStripMenuItem.Name = "fillForwardToolStripMenuItem";
-            this.fillForwardToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.fillForwardToolStripMenuItem.Text = "Fill &Forward";
-            this.fillForwardToolStripMenuItem.ToolTipText = "Fill index forward from latest known comic";
-            this.fillForwardToolStripMenuItem.Click += new System.EventHandler(this.fillForwardToolStripMenuItem_Click);
-            // 
-            // fillBackwardToolStripMenuItem
-            // 
-            this.fillBackwardToolStripMenuItem.Name = "fillBackwardToolStripMenuItem";
-            this.fillBackwardToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.fillBackwardToolStripMenuItem.Text = "Fill &Backward";
-            this.fillBackwardToolStripMenuItem.ToolTipText = "Fill index backward from earliest known comic";
+            this.fillIndexToolStripMenuItem.Name = "fillIndexToolStripMenuItem";
+            this.fillIndexToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fillIndexToolStripMenuItem.Text = "&Fill...";
+            this.fillIndexToolStripMenuItem.Click += new System.EventHandler(this.fillIndexToolStripMenuItem_Click);
             // 
             // trimToolStripMenuItem
             // 
             this.trimToolStripMenuItem.Name = "trimToolStripMenuItem";
-            this.trimToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.trimToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.trimToolStripMenuItem.Text = "Trim";
             this.trimToolStripMenuItem.ToolTipText = "Removes page info from downloaded chapters; use if your library is loading slowly" +
                 "";
@@ -574,7 +565,7 @@
             // 
             this.refreshToolStripMenuItem.Enabled = false;
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.ToolTipText = "Only available for natively supported sources with a chapter index";
             // 
@@ -661,8 +652,7 @@
         private System.Windows.Forms.ToolStripMenuItem seriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem refreshCurrentSeriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem indexToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fillForwardToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fillBackwardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fillIndexToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteCurrentSeriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem trimToolStripMenuItem;

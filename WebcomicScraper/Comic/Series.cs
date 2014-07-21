@@ -18,9 +18,10 @@ namespace WebcomicScraper.Comic
         public string Artist { get; set; }
         public string SeedURL { get; set; }
         public string CoverImageURL { get; set; }
+
         public Index Index { get; set; }
         public Source Source { get; set; }
-        public Link SampleComic { get; set; }
+        public Link ComicLink { get; set; }
         public Link NextLink { get; set; }
         public Link PrevLink { get; set; }
         public Link FirstLink { get; set; }

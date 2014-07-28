@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Net;
 using System.Windows.Forms;
 using WebcomicScraper.Comic;
 using WebcomicScraper.Sources;
@@ -46,8 +47,6 @@ namespace WebcomicScraper
             _bLoaded = false;
             webBrowser1.Navigating -= webBrowser1_Navigating;
             webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
-
-            webBrowser1.ScriptErrorsSuppressed = true;
             webBrowser1.Navigate(txtURL.Text);
         }
 
@@ -80,8 +79,6 @@ namespace WebcomicScraper
             _doc = new HtmlAgilityPack.HtmlDocument();
             if (browser.Document != null)
             {
-                _doc.LoadHtml(browser.Document.Body.Parent.OuterHtml);
-
                 NewSeries = Scraper.LoadSeries(browser.Url.ToString(), _doc);
                 Scraper.AnalyzeSeries(NewSeries);
 
@@ -126,14 +123,6 @@ namespace WebcomicScraper
                         node = ParentAnchorNode(node);
 
                     _dicRowLink[cellPosition.Row].XPath = node.XPath;
-
-                    using (System.Net.WebClient wc = new System.Net.WebClient())
-                    {
-                        var pageHtml = wc.DownloadString(webBrowser1.Url);
-                        var newdoc = new HtmlAgilityPack.HtmlDocument();
-                        newdoc.LoadHtml(pageHtml);
-                        var testNode = newdoc.DocumentNode.SelectSingleNode(node.XPath);
-                    }
                 }
             }
         }

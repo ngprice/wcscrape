@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 using WebcomicScraper.Comic;
 using HtmlAgilityPack;
 
@@ -15,6 +16,9 @@ namespace WebcomicScraper
     {
         private Series _series;
         private Index _index;
+        private bool _browserCompleted;
+        private HtmlAgilityPack.HtmlDocument _doc;
+
         public Index LoadedIndex 
         {
             get
@@ -31,6 +35,8 @@ namespace WebcomicScraper
         {
             InitializeComponent();
             InitializeBackgroundWorkers();
+            webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
+
             _series = series;
             LoadedIndex = series.Index;
         }
@@ -87,12 +93,75 @@ namespace WebcomicScraper
             var worker = sender as BackgroundWorker;
             var dir = (FillDirection)e.Argument;
 
-            var page = Scraper.FillSeriesIndex(_series, dir);
-            while (!(worker.CancellationPending || e.Cancel) && page != null)
+            while (!(worker.CancellationPending || e.Cancel))
             {
-                worker.ReportProgress(0, String.Format("Added page {0}\n", page.Title));
-                page = Scraper.FillSeriesIndex(_series, dir);
+                Page contextPage = null;
+                Link contextLink = null;
+                switch (dir)
+                {
+                    case (FillDirection.Forward):
+                        contextPage = _series.Index.Pages.Last();
+                        contextLink = _series.NextLink;
+                        break;
+                    case (FillDirection.Backward):
+                        contextPage = _series.Index.Pages.First();
+                        contextLink = _series.PrevLink;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (contextPage != null)
+                {
+                    if (contextPage.Document == null)
+                    {
+                        GetBrowserAgilityDoc(contextPage.PageURL);
+                        while (!_browserCompleted)
+                            Thread.Sleep(100);
+                        contextPage.Document = _doc;
+                    }
+
+                    var newPageLink = contextPage.Document.DocumentNode.SelectSingleNode(contextLink.XPath);
+                    string newPageUrl = newPageLink.GetAttributeValue("href", "");
+
+                    if (!String.IsNullOrEmpty(newPageUrl))
+                    {
+                        GetBrowserAgilityDoc(newPageUrl);
+                        while (!_browserCompleted)
+                            Thread.Sleep(100);
+
+                        Page newPage = _series.Source.GetPage(_series.ComicLink, _doc);
+
+                        switch (dir)
+                        {
+                            case (FillDirection.Forward):
+                                _series.Index.Pages.Add(newPage);
+                                break;
+                            case (FillDirection.Backward):
+                                _series.Index.Pages.Insert(0, newPage);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        worker.ReportProgress(0, String.Format("Added page {0}\n", newPage.Title));
+                    }
+                }
             }
+        }
+
+        private void GetBrowserAgilityDoc(string url) //use WebBrowser to retrieve HTML, as javascript may change the document body.
+        {
+            _browserCompleted = false;
+            webBrowser1.Navigate(url);
+        }
+
+        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            var browser = sender as WebBrowser;
+            _doc = new HtmlAgilityPack.HtmlDocument();
+            _doc.LoadHtml(browser.Document.Body.Parent.OuterHtml);
+            _browserCompleted = true;
         }
 
         private void index_ReportProgress(object sender, ProgressChangedEventArgs e)

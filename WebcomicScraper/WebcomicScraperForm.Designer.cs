@@ -520,19 +520,19 @@
             // refreshCurrentSeriesToolStripMenuItem
             // 
             this.refreshCurrentSeriesToolStripMenuItem.Name = "refreshCurrentSeriesToolStripMenuItem";
-            this.refreshCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.refreshCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.refreshCurrentSeriesToolStripMenuItem.Text = "&Refresh";
             // 
             // editCurrentSeriesToolStripMenuItem
             // 
             this.editCurrentSeriesToolStripMenuItem.Name = "editCurrentSeriesToolStripMenuItem";
-            this.editCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.editCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.editCurrentSeriesToolStripMenuItem.Text = "&Edit";
             // 
             // deleteCurrentSeriesToolStripMenuItem
             // 
             this.deleteCurrentSeriesToolStripMenuItem.Name = "deleteCurrentSeriesToolStripMenuItem";
-            this.deleteCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteCurrentSeriesToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.deleteCurrentSeriesToolStripMenuItem.Text = "&Delete";
             this.deleteCurrentSeriesToolStripMenuItem.Click += new System.EventHandler(this.deleteCurrentSeriesToolStripMenuItem_Click);
             // 
@@ -543,20 +543,20 @@
             this.trimToolStripMenuItem,
             this.refreshToolStripMenuItem});
             this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.indexToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.indexToolStripMenuItem.Text = "&Index";
             // 
             // fillIndexToolStripMenuItem
             // 
             this.fillIndexToolStripMenuItem.Name = "fillIndexToolStripMenuItem";
-            this.fillIndexToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fillIndexToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.fillIndexToolStripMenuItem.Text = "&Fill...";
             this.fillIndexToolStripMenuItem.Click += new System.EventHandler(this.fillIndexToolStripMenuItem_Click);
             // 
             // trimToolStripMenuItem
             // 
             this.trimToolStripMenuItem.Name = "trimToolStripMenuItem";
-            this.trimToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.trimToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.trimToolStripMenuItem.Text = "Trim";
             this.trimToolStripMenuItem.ToolTipText = "Removes page info from downloaded chapters; use if your library is loading slowly" +
                 "";
@@ -565,7 +565,7 @@
             // 
             this.refreshToolStripMenuItem.Enabled = false;
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.ToolTipText = "Only available for natively supported sources with a chapter index";
             // 

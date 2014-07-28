@@ -31,12 +31,13 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FillIndex));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.dgvIndex = new System.Windows.Forms.DataGridView();
-            this.indexBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnFillBackward = new System.Windows.Forms.Button();
             this.btnFillForward = new System.Windows.Forms.Button();
             this.txtStatus = new System.Windows.Forms.TextBox();
+            this.indexBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvIndex)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
@@ -55,7 +56,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 251F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(528, 251);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
@@ -69,11 +70,6 @@
             this.dgvIndex.Name = "dgvIndex";
             this.dgvIndex.Size = new System.Drawing.Size(311, 245);
             this.dgvIndex.TabIndex = 0;
-            // 
-            // indexBackgroundWorker
-            // 
-            this.indexBackgroundWorker.WorkerReportsProgress = true;
-            this.indexBackgroundWorker.WorkerSupportsCancellation = true;
             // 
             // tableLayoutPanel2
             // 
@@ -132,12 +128,27 @@
             this.txtStatus.Size = new System.Drawing.Size(199, 179);
             this.txtStatus.TabIndex = 3;
             // 
+            // indexBackgroundWorker
+            // 
+            this.indexBackgroundWorker.WorkerReportsProgress = true;
+            this.indexBackgroundWorker.WorkerSupportsCancellation = true;
+            // 
+            // webBrowser1
+            // 
+            this.webBrowser1.Location = new System.Drawing.Point(8, 12);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.ScriptErrorsSuppressed = true;
+            this.webBrowser1.Size = new System.Drawing.Size(166, 101);
+            this.webBrowser1.TabIndex = 1;
+            // 
             // FillIndex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(528, 251);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.webBrowser1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FillIndex";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -161,5 +172,6 @@
         private System.Windows.Forms.Button btnFillForward;
         private System.Windows.Forms.TextBox txtStatus;
         private System.ComponentModel.BackgroundWorker indexBackgroundWorker;
+        private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }

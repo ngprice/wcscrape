@@ -18,7 +18,15 @@ namespace WebcomicScraper
 {
     /*
     * TODO LIST:
-    * --Index fill for next/prev style comics
+     * * * NEW BRANCH: Replace WebBrowser control entirely? http://htmlrenderer.codeplex.com/
+     * * * * --> Replace WebBrowsers with calls to WebClient, get pre-processed (no javascript) HTML
+    * --Index fill for next/prev style comics *** Must get HTMLDocument html from WebBrowser controls b/c of javascript in the document (ugh)
+    * http://stackoverflow.com/questions/1418466/single-threaded-apartment-cannot-instantiate-activex-control
+    *   L--> http://stackoverflow.com/questions/3360555/how-to-pass-parameters-to-threadstart-method-in-thread
+    *   L--> http://msdn.microsoft.com/en-us/library/aa645740(v=vs.71).aspx
+    * http://stackoverflow.com/questions/21680738/how-to-post-messages-to-an-sta-thread-running-a-message-pump/21684059#21684059
+    * http://www.codeproject.com/Questions/197007/How-Use-WebBrowser-without-winform
+    * 
     *   L--> handle comics whose last link is static (e.g. penny-arcade.com/comic)
     *   L--> Support relative href's (index filler must know about this)
     *       L--> e.g. depressedalien.com: <a href="212"> redirects to depressedalien.com/212
@@ -30,6 +38,7 @@ namespace WebcomicScraper
     * --Edit current series info
     *   L--> automatically load sample URL
     * --Cache loaded cover images
+    * --Mark pages loaded for Mangahere downloads
     * 
     * PIE IN THE SKY:
     * --RSS feeds for comic updates
@@ -247,26 +256,6 @@ namespace WebcomicScraper
             filestream.Close();
 
             return result;
-        }
-
-        public static Page FillSeriesIndex(Series series, FillDirection direction)
-        {
-            switch (direction)
-            {
-                case (FillDirection.Forward):
-                    var nextPage = series.Source.GetPageFromLink(series.Index.Pages.Last(), series.NextLink);
-                    if (nextPage != null)
-                        series.Index.Pages.Add(nextPage);
-                    return nextPage;
-                case (FillDirection.Backward):
-                    var prevPage = series.Source.GetPageFromLink(series.Index.Pages.First(), series.PrevLink);
-                    if (prevPage != null)
-                        series.Index.Pages.Insert(0, prevPage);
-                    return prevPage;
-                default:
-                    return null;
-            }
-            
         }
     }
 }

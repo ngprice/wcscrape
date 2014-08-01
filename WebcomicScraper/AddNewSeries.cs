@@ -267,8 +267,7 @@ namespace WebcomicScraper
                 NewSeries.FirstLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtFirstLink).Row];
                 NewSeries.LastLink = _dicRowLink[tableLayoutPanel2.GetPositionFromControl(txtLastLink).Row];
 
-                var page = NewSeries.Source.GetPage(NewSeries.ComicLink, _doc); //add sample comic to index
-                page.PageURL = NewSeries.ComicLink.SampleURL;
+                var page = NewSeries.Source.GetPage(NewSeries.ComicLink, NewSeries.ComicLink.SampleURL, _doc); //add sample comic to index
                 page.Num = 1;
 
                 NewSeries.Index.Pages = new List<Page>();

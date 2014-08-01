@@ -53,7 +53,6 @@
             this.threadPanel = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
             this.nudThreads = new System.Windows.Forms.NumericUpDown();
-            this.chkConvert = new System.Windows.Forms.CheckBox();
             this.downloadBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -75,6 +74,10 @@
             this.fillIndexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trimToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.chkConvert = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.nudChapterSize = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -88,6 +91,8 @@
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudChapterSize)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -282,7 +287,7 @@
             this.tableLayoutPanel2.Controls.Add(this.progressBar1, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.btnDownload, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.threadPanel, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.chkConvert, 1, 2);
+            this.tableLayoutPanel2.Controls.Add(this.panel1, 1, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 192);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -359,20 +364,6 @@
             this.nudThreads.Name = "nudThreads";
             this.nudThreads.Size = new System.Drawing.Size(34, 20);
             this.nudThreads.TabIndex = 17;
-            // 
-            // chkConvert
-            // 
-            this.chkConvert.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkConvert.AutoSize = true;
-            this.chkConvert.Checked = true;
-            this.chkConvert.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkConvert.Location = new System.Drawing.Point(103, 55);
-            this.chkConvert.Name = "chkConvert";
-            this.chkConvert.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.chkConvert.Size = new System.Drawing.Size(102, 20);
-            this.chkConvert.TabIndex = 19;
-            this.chkConvert.Text = "Convert to .CBZ";
-            this.chkConvert.UseVisualStyleBackColor = true;
             // 
             // downloadBackgroundWorker
             // 
@@ -569,6 +560,49 @@
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.ToolTipText = "Only available for natively supported sources with a chapter index";
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.nudChapterSize);
+            this.panel1.Controls.Add(this.chkConvert);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(103, 55);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(210, 20);
+            this.panel1.TabIndex = 19;
+            // 
+            // chkConvert
+            // 
+            this.chkConvert.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkConvert.AutoSize = true;
+            this.chkConvert.Checked = true;
+            this.chkConvert.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkConvert.Location = new System.Drawing.Point(3, 0);
+            this.chkConvert.Name = "chkConvert";
+            this.chkConvert.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.chkConvert.Size = new System.Drawing.Size(84, 20);
+            this.chkConvert.TabIndex = 20;
+            this.chkConvert.Text = "Create .CBZ";
+            this.chkConvert.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(93, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.TabIndex = 21;
+            this.label1.Text = "Chapter size:";
+            // 
+            // nudChapterSize
+            // 
+            this.nudChapterSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudChapterSize.Location = new System.Drawing.Point(165, 0);
+            this.nudChapterSize.Name = "nudChapterSize";
+            this.nudChapterSize.Size = new System.Drawing.Size(34, 20);
+            this.nudChapterSize.TabIndex = 22;
+            // 
             // WebcomicScraperForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -604,6 +638,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudChapterSize)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -648,7 +685,6 @@
         private System.Windows.Forms.Label lblURL;
         private System.Windows.Forms.TextBox txtURL;
         private System.Windows.Forms.ListBox listBoxLibrary;
-        private System.Windows.Forms.CheckBox chkConvert;
         private System.Windows.Forms.ToolStripMenuItem seriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem refreshCurrentSeriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem indexToolStripMenuItem;
@@ -657,6 +693,10 @@
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem trimToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editCurrentSeriesToolStripMenuItem;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown nudChapterSize;
+        private System.Windows.Forms.CheckBox chkConvert;
     }
 }
 

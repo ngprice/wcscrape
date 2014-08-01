@@ -11,7 +11,7 @@ namespace WebcomicScraper.Sources
 {
     public class SequentialSource : Source
     {
-        public override Page GetPage(Link imageLink, HtmlDocument doc)
+        public override Page GetPage(Link imageLink, string fromUrl, HtmlDocument doc)
         {
             var img = doc.DocumentNode.SelectSingleNode(imageLink.XPath);
 
@@ -22,6 +22,7 @@ namespace WebcomicScraper.Sources
             result.ImageURL = img.GetAttributeValue("src", "");
             result.Title = String.IsNullOrEmpty(img.GetAttributeValue("title", "")) ? img.GetAttributeValue("alt", "") : img.GetAttributeValue("title", "");
             result.Document = doc;
+            result.PageURL = fromUrl;
 
             return result;
         }

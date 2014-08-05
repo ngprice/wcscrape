@@ -14,7 +14,7 @@ namespace WebcomicScraper.Sources
         {
             var result = String.Empty;
 
-            var titleElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div/h1[@class='title']");
+            var titleElement = doc.DocumentNode.SelectSingleNode("/html[1]/body[1]/section[@id='main']/article[1]/div[1]/div[1]/h1[@class='title']");//"/section[@id='main']/article[1]/div[1]/div/h1[@class='title']");
             if (titleElement != null)
                 result = titleElement.InnerText.Trim();
 
@@ -25,7 +25,7 @@ namespace WebcomicScraper.Sources
         {
             var result = String.Empty;
 
-            var descriptionElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul//p[@id='show']");
+            var descriptionElement = doc.DocumentNode.SelectSingleNode("/html[1]/body[1]/section[1]/article[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/li[1]/li[1]/li[1]/li[1]/li[1]/li[1]/li[1]/li[1]/p[1]");//"/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul//p[@id='show']");
             if (descriptionElement != null)
             {
                 descriptionElement.RemoveChild(descriptionElement.LastChild);
@@ -38,7 +38,7 @@ namespace WebcomicScraper.Sources
         {
             var result = String.Empty;
 
-            var authorElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul//label[text()='Author(s):']/../a[1]");
+            var authorElement = doc.DocumentNode.SelectSingleNode("/html[1]/body[1]/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul[1]/li[1]/li[1]/li[1]/li[1]/li[1]/a[1]");//"/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul//label[text()='Author(s):']/../a[1]");
             if (authorElement != null)
                 result = authorElement.InnerText.Trim();
 
@@ -49,7 +49,7 @@ namespace WebcomicScraper.Sources
         {
             var result = String.Empty;
 
-            var artistElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul//label[text()='Artist(s):']/../a[1]");
+            var artistElement = doc.DocumentNode.SelectSingleNode("/html[1]/body[1]/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul[1]/li[1]/li[1]/li[1]/li[1]/li[1]/li[1]/a[1]");//"/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[1]/ul//label[text()='Artist(s):']/../a[1]");
             if (artistElement != null)
                 result = artistElement.InnerText.Trim();
 
@@ -60,7 +60,7 @@ namespace WebcomicScraper.Sources
         {
             var result = String.Empty;
 
-            var coverElement = doc.DocumentNode.SelectSingleNode("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='manga_detail_top clearfix']/img[@class='img' and contains(@src,'cover')]");
+            var coverElement = doc.DocumentNode.SelectSingleNode("/html[1]/body[1]/section[1]/article[1]/div[1]/div[2]/div[1]/img[1]");//"/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='manga_detail_top clearfix']/img[@class='img' and contains(@src,'cover')]");
             if (coverElement != null)
                 result = coverElement.GetAttributeValue("src", "");
 
@@ -72,7 +72,7 @@ namespace WebcomicScraper.Sources
             var result = new List<Chapter>();
             int ctr = 0;
 
-            foreach (var node in doc.DocumentNode.SelectNodes("/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='detail_list']/ul[1]/li").Reverse())
+            foreach (var node in doc.DocumentNode.SelectNodes("/html[1]/body[1]/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='detail_list']/ul[1]/li").Reverse())//"/section[@id='main']/article[1]/div[1]/div[@class='manga_detail']/div[@class='detail_list']/ul[1]/li").Reverse())
             {
                 ctr++;
                 var chapter = new Chapter();

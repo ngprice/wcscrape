@@ -76,7 +76,11 @@ namespace WebcomicScraper
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             WebBrowser browser = (WebBrowser)sender;
+            if (browser.ReadyState != WebBrowserReadyState.Complete)
+                return;
+
             _doc = new HtmlAgilityPack.HtmlDocument();
+            _doc.LoadHtml(browser.Document.Body.Parent.OuterHtml);
             if (browser.Document != null)
             {
                 NewSeries = Scraper.LoadSeries(browser.Url.ToString(), _doc);

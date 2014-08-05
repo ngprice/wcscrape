@@ -56,6 +56,8 @@ namespace WebcomicScraper
 
             nudThreads.Value = Math.Min(Environment.ProcessorCount, 64);
 
+            string foo = Properties.Settings.Default.LibraryPath;
+            string bar = Properties.Settings.Default.SaveDir;
             if (!String.IsNullOrEmpty(Properties.Settings.Default.LibraryPath) && File.Exists(Properties.Settings.Default.LibraryPath))
             {
                 try

@@ -56,6 +56,8 @@ namespace WebcomicScraper
 
             nudThreads.Value = Math.Min(Environment.ProcessorCount, 64);
 
+            string foo = Properties.Settings.Default.LibraryPath;
+            string bar = Properties.Settings.Default.SaveDir;
             if (!String.IsNullOrEmpty(Properties.Settings.Default.LibraryPath) && File.Exists(Properties.Settings.Default.LibraryPath))
             {
                 try
@@ -127,7 +129,11 @@ namespace WebcomicScraper
                     {
                         if (!worker.CancellationPending)
                         {
-                            if (!Scraper.DownloadChapter(currentRow.DataBoundItem as Chapter, LoadedSeries, txtSaveDir.Text, threads, chkConvert.Checked, _cs))
+                            var chapter = (Chapter)currentRow.DataBoundItem;
+                            chapter.Downloading = true;
+                            currentRow.DefaultCellStyle.BackColor = Color.LightYellow;
+
+                            if (!Scraper.DownloadChapter(chapter, LoadedSeries, txtSaveDir.Text, threads, chkConvert.Checked, _cs))
                                 e.Result = false;
                             else
                             {
@@ -206,6 +212,8 @@ namespace WebcomicScraper
                         row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
                         if (chapter.Downloaded)
                             row.DefaultCellStyle.BackColor = Color.LightGreen;
+                        else if (chapter.Downloading)
+                            row.DefaultCellStyle.BackColor = Color.LightYellow;
                     }
                 }
                 else if (series.Index.Pages != null && series.Index.Pages.Any())
@@ -372,7 +380,7 @@ namespace WebcomicScraper
             {
                 if (fillIndexForm.ShowDialog() == DialogResult.OK) //Save
                 {
-                    DisplayLibrary(LoadedLibrary);
+                    LoadedSeries = fillIndexForm.LoadedSeries;
                     listBoxLibrary.SelectedItem = LoadedSeries;
                     _bLibraryDirty = true;
                 }

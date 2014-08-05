@@ -26,7 +26,7 @@ namespace WebcomicScraper.Comic
 
         public override string ToString()
         {
-            return (String.Format("Page {0}", Num));
+            return Title;
         }
     }
 }

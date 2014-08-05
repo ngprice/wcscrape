@@ -19,6 +19,7 @@ namespace WebcomicScraper.Comic
         public string SourceURL { get; set; }
         public List<Page> Pages { get; set; }
         public bool Downloaded { get; set; }
+        public bool Downloading { get; set; }
 
         public Chapter() { }
 

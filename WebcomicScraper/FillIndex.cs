@@ -65,7 +65,7 @@ namespace WebcomicScraper
                     if (chapter.Downloaded)
                         row.DefaultCellStyle.BackColor = Color.LightGreen;
                     else if (chapter.Downloading)
-                        row.DefaultCellStyle.BackColor = Color.LightYellow;
+                        row.DefaultCellStyle.BackColor = System.Drawing.ColorTranslator.FromHtml("#FFFF77");
                 }
             }
             else if (index.Pages != null && index.Pages.Any())

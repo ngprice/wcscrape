@@ -20,25 +20,17 @@ namespace WebcomicScraper
     * TODO LIST:
      * * * NEW BRANCH: Replace WebBrowser control entirely? http://htmlrenderer.codeplex.com/
      * * * * --> Replace WebBrowsers with calls to WebClient, get pre-processed (no javascript) HTML
-    * --Index fill for next/prev style comics *** Must get HTMLDocument html from WebBrowser controls b/c of javascript in the document (ugh)
-    * http://stackoverflow.com/questions/1418466/single-threaded-apartment-cannot-instantiate-activex-control
-    *   L--> http://stackoverflow.com/questions/3360555/how-to-pass-parameters-to-threadstart-method-in-thread
-    *   L--> http://msdn.microsoft.com/en-us/library/aa645740(v=vs.71).aspx
-    * http://stackoverflow.com/questions/21680738/how-to-post-messages-to-an-sta-thread-running-a-message-pump/21684059#21684059
-    * http://www.codeproject.com/Questions/197007/How-Use-WebBrowser-without-winform
-    * 
     *   L--> handle comics whose last link is static (e.g. penny-arcade.com/comic)
     *   L--> Support relative href's (index filler must know about this)
     *       L--> e.g. depressedalien.com: <a href="212"> redirects to depressedalien.com/212
-    * --Mark partially downloaded comics yellow in list
-    *   L--> handle in FillIndex form as well
     * --Option to trim page info from chapters that have been downloaded to reduce size of wclib.xml
     *   L--> store series XML in series folder
     * --Timers on status updates (e.g. Download successful! (00:01:30 s))
     * --Edit current series info
     *   L--> automatically load sample URL
     * --Cache loaded cover images
-    * --Mark pages loaded for Mangahere downloads
+    * --Mark pages downloaded for Mangahere downloads
+    * --Disable series switching during download
     * 
     * PIE IN THE SKY:
     * --RSS feeds for comic updates
@@ -135,13 +127,20 @@ namespace WebcomicScraper
                         {
                             try
                             {
-                                cs.Token.ThrowIfCancellationRequested();
+                                //cs.Token.ThrowIfCancellationRequested();
+                                if (cs.Token.IsCancellationRequested)
+                                {
+                                    successful = false;
+                                    break;
+                                }
 
                                 var pagePath = Path.Combine(chapterPath, page.Num.ToString("0000") + ".jpeg");
                                 if (!File.Exists(pagePath))
                                 {
                                     using (var img = new Bitmap(GetImage(page.ImageURL)))
                                         img.Save(pagePath, System.Drawing.Imaging.ImageFormat.Jpeg); //Bitmap is workaround for GDI+ error in Image.Save()
+                                    page.Downloaded = true;
+                                    chapter.Downloading = true;
                                     successful = true;
                                 }
                                 else successful = true;
@@ -173,7 +172,9 @@ namespace WebcomicScraper
                         zip.AddDirectory(chapterPath);
                         zip.Save(targetPath); 
                     }
-                    Directory.Delete(chapterPath, true);
+
+                    if (File.Exists(targetPath))
+                        Directory.Delete(chapterPath, true);
                 }
                 chapter.Downloaded = true;
             }

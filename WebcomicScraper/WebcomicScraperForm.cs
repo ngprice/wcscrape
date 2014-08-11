@@ -56,8 +56,6 @@ namespace WebcomicScraper
 
             nudThreads.Value = Math.Min(Environment.ProcessorCount, 64);
 
-            string foo = Properties.Settings.Default.LibraryPath;
-            string bar = Properties.Settings.Default.SaveDir;
             if (!String.IsNullOrEmpty(Properties.Settings.Default.LibraryPath) && File.Exists(Properties.Settings.Default.LibraryPath))
             {
                 try
@@ -101,6 +99,7 @@ namespace WebcomicScraper
             {
                 try
                 {
+                    Status("Canceling download...");
                     downloadBackgroundWorker.CancelAsync();
                     _cs.Cancel();
                     _bDownloading = false;
@@ -130,8 +129,7 @@ namespace WebcomicScraper
                         if (!worker.CancellationPending)
                         {
                             var chapter = (Chapter)currentRow.DataBoundItem;
-                            chapter.Downloading = true;
-                            currentRow.DefaultCellStyle.BackColor = Color.LightYellow;
+                            currentRow.DefaultCellStyle.BackColor = System.Drawing.ColorTranslator.FromHtml("#FFFF77");
 
                             if (!Scraper.DownloadChapter(chapter, LoadedSeries, txtSaveDir.Text, threads, chkConvert.Checked, _cs))
                                 e.Result = false;
@@ -183,6 +181,7 @@ namespace WebcomicScraper
         private void download_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBar1.Value = e.ProgressPercentage;
+            Status(String.Format("Download in progress: {0}%", e.ProgressPercentage));
         }
 
         private void DisplaySeries(Series series)
@@ -213,7 +212,7 @@ namespace WebcomicScraper
                         if (chapter.Downloaded)
                             row.DefaultCellStyle.BackColor = Color.LightGreen;
                         else if (chapter.Downloading)
-                            row.DefaultCellStyle.BackColor = Color.LightYellow;
+                            row.DefaultCellStyle.BackColor = System.Drawing.ColorTranslator.FromHtml("#FFFF77");
                     }
                 }
                 else if (series.Index.Pages != null && series.Index.Pages.Any())
@@ -353,8 +352,15 @@ namespace WebcomicScraper
 
         private void WebcomicScraperForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Properties.Settings.Default.SaveDir = txtSaveDir.Text;
-            Properties.Settings.Default.Save();
+            if (!String.IsNullOrEmpty(txtSaveDir.Text))
+            {
+                Properties.Settings.Default.SaveDir = txtSaveDir.Text;
+                var libPath = txtSaveDir.Text + @"\wclib.xml";
+                if (File.Exists(libPath))
+                    Properties.Settings.Default.LibraryPath = libPath;
+
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void deleteCurrentSeriesToolStripMenuItem_Click(object sender, EventArgs e)
